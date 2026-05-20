@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPG Dice Roller</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --primary-color: #e74c3c;
+            --primary-hover: #c0392b;
+            --text-color: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --accent-color: #f1c40f;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        #dice-display {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 20px rgba(241, 196, 15, 0.3);
+            text-align: center;
+            width: 100%;
+        }
+
+        .rolling-animation {
+            animation: pulse 0.1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.8; }
+            to { transform: scale(1.1); opacity: 1; }
+        }
+
+        #result-container {
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        #result-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-group {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .result-group:last-child {
+            border-bottom: none;
+        }
+
+        .group-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .group-total {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .group-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        #roll-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        #roll-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.4);
+        }
+
+        .shake-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expression-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #expression-input {
+            background-color: #1a1a1a;
+            border: 2px solid #444;
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            width: 100%;
+            font-family: monospace;
+        }
+
+        #expression-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .dice-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .dice-btn {
+            background-color: #3d3d3d;
+            border: none;
+            color: white;
+            padding: 10px 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .dice-btn:hover {
+            background-color: #4d4d4d;
+        }
+
+        .dice-btn.special {
+            background-color: #444;
+            color: var(--accent-color);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-save { background-color: var(--primary-color); color: white; }
+        .btn-cancel { background-color: #555; color: white; }
+
+        /* Log Styles */
+        #log-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            display: none;
+        }
+
+        #log-container.active {
+            display: block;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .log-item {
+            background-color: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .log-time {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .log-expr {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* Shake Permission Overlay */
+        #permission-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: black;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+
+        @media (max-width: 400px) {
+            .dice-grid { grid-template-columns: repeat(4, 1fr); }
+            #dice-display { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Dice Roller</h1>
+        <div style="display: flex; gap: 5px;">
+            <button class="icon-btn" id="btn-log" title="Histórico">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </button>
+            <button class="icon-btn" id="btn-settings" title="Configurações">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33 1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div id="dice-display">1d20</div>
+        
+        <div id="result-container">
+            <!-- Resultados aparecerão aqui -->
+        </div>
+
+        <button id="roll-button">Rolar Dados</button>
+
+        <div class="shake-hint">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            Chacoalhe para rolar
+        </div>
+
+        <div id="log-container">
+            <div class="log-header">
+                <h3>Histórico</h3>
+                <button class="btn btn-cancel" id="btn-clear-log" style="padding: 5px 10px; font-size: 0.8rem; flex: none;">Limpar</button>
+            </div>
+            <div class="log-list" id="log-list">
+                <!-- Itens do log -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Configuração -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configuração</h2>
+                <button class="icon-btn" id="btn-close-settings">&times;</button>
+            </div>
+            
+            <div class="expression-input-container">
+                <label for="expression-input">Expressão de Dados:</label>
+                <input type="text" id="expression-input" placeholder="Ex: 1d20+5 | 2d6">
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Use | para separar grupos.</p>
+            </div>
+
+            <div class="dice-grid">
+                <button class="dice-btn" data-val="d2">d2</button>
+                <button class="dice-btn" data-val="d3">d3</button>
+                <button class="dice-btn" data-val="d4">d4</button>
+                <button class="dice-btn" data-val="d6">d6</button>
+                <button class="dice-btn" data-val="d8">d8</button>
+                <button class="dice-btn" data-val="d10">d10</button>
+                <button class="dice-btn" data-val="d12">d12</button>
+                <button class="dice-btn" data-val="d20">d20</button>
+                <button class="dice-btn" data-val="d30">d30</button>
+                <button class="dice-btn" data-val="d100">d100</button>
+                <button class="dice-btn special" data-val="+">+</button>
+                <button class="dice-btn special" data-val="-">-</button>
+                <button class="dice-btn special" data-val="|">|</button>
+                <button class="dice-btn special" data-val="back">⌫</button>
+                <button class="dice-btn special" data-val="clear">C</button>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="btn-cancel-settings">Cancelar</button>
+                <button class="btn btn-save" id="btn-save-settings">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="permission-overlay">Ativar Shake & Áudio</div>
+
+    <script>
+        /**
+         * RPG Dice Roller - Core Logic
+         */
+
+        // --- State Management ---
+        const state = {
+            expression: '1d20+5',
+            history: JSON.parse(localStorage.getItem('dice_history') || '[]'),
+            isRolling: false,
+            audioEnabled: false,
+            audioCtx: null
+        };
+
+        // --- DOM Elements ---
+        const elements = {
+            diceDisplay: document.getElementById('dice-display'),
+            resultContainer: document.getElementById('result-container'),
+            rollButton: document.getElementById('roll-button'),
+            settingsModal: document.getElementById('settings-modal'),
+            expressionInput: document.getElementById('expression-input'),
+            logContainer: document.getElementById('log-container'),
+            logList: document.getElementById('log-list'),
+            permissionOverlay: document.getElementById('permission-overlay')
+        };
+
+        // --- Audio Engine (Synthetic Sounds) ---
+        function initAudio() {
+            if (state.audioEnabled) return;
+            state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            state.audioEnabled = true;
+            elements.permissionOverlay.style.display = 'none';
+        }
+
+        function playDiceSound() {
+            if (!state.audioCtx) return;
+            const ctx = state.audioCtx;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(150 + Math.random() * 100, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+        }
+
+        function playShakeSound() {
+            if (!state.audioCtx) return;
+            const ctx = state.audioCtx;
+            const bufferSize = ctx.sampleRate * 0.1;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+            
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 2000;
+            
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            
+            noise.start();
+        }
+
+        // --- Parser Logic ---
+        function parseExpression(expr) {
+            const groups = expr.split('|').map(g => g.trim()).filter(g => g.length > 0);
+            const results = [];
+
+            groups.forEach(groupStr => {
+                const groupResult = {
+                    original: groupStr,
+                    total: 0,
+                    details: []
+                };
+
+                // Regex to find dice (e.g., 2d6) or modifiers (+5, -3)
+                // Matches: [+-]? (\d*) d (\d+)  OR  [+-] \d+
+                const regex = /([+-]?\s*\d*d\d+)|([+-]?\s*\d+)/g;
+                let match;
+                
+                while ((match = regex.exec(groupStr)) !== null) {
+                    const part = match[0].replace(/\s+/g, '');
+                    if (part.includes('d')) {
+                        // It's a die
+                        let [count, sides] = part.split('d');
+                        let sign = 1;
+                        if (count.startsWith('+')) { count = count.slice(1); }
+                        else if (count.startsWith('-')) { sign = -1; count = count.slice(1); }
+                        
+                        count = parseInt(count) || 1;
+                        sides = parseInt(sides);
+                        
+                        const rolls = [];
+                        for (let i = 0; i < count; i++) {
+                            const r = Math.floor(Math.random() * sides) + 1;
+                            rolls.push(r);
+                            groupResult.total += (r * sign);
+                        }
+                        groupResult.details.push({
+                            type: 'dice',
+                            expr: part,
+                            rolls: rolls,
+                            subtotal: rolls.reduce((a, b) => a + b, 0) * sign
+                        });
+                    } else {
+                        // It's a fixed modifier
+                        const val = parseInt(part);
+                        if (!isNaN(val)) {
+                            groupResult.total += val;
+                            groupResult.details.push({
+                                type: 'mod',
+                                val: val
+                            });
+                        }
+                    }
+                }
+                results.push(groupResult);
+            });
+
+            return results;
+        }
+
+        // --- UI Actions ---
+        function updateDisplay(text) {
+            elements.diceDisplay.textContent = text;
+        }
+
+        function renderResults(results) {
+            elements.resultContainer.innerHTML = '';
+            results.forEach((res, idx) => {
+                const div = document.createElement('div');
+                div.className = 'result-group';
+                
+                const detailStr = res.details.map(d => {
+                    if (d.type === 'dice') {
+                        return `${d.expr}: [${d.rolls.join(', ')}]`;
+                    } else {
+                        return (d.val >= 0 ? '+' : '') + d.val;
+                    }
+                }).join(' ');
+
+                div.innerHTML = `
+                    <div class="group-title">Grupo ${idx + 1}: ${res.original}</div>
+                    <div class="group-total">${res.total}</div>
+                    <div class="group-details">${detailStr}</div>
+                `;
+                elements.resultContainer.appendChild(div);
+            });
+            elements.resultContainer.classList.add('visible');
+        }
+
+        function addToLog(expression, results) {
+            const entry = {
+                time: new Date().toLocaleTimeString(),
+                expression,
+                results
+            };
+            state.history.unshift(entry);
+            if (state.history.length > 50) state.history.pop();
+            localStorage.setItem('dice_history', JSON.stringify(state.history));
+            renderLog();
+        }
+
+        function renderLog() {
+            elements.logList.innerHTML = state.history.map(item => `
+                <div class="log-item">
+                    <div class="log-time">${item.time}</div>
+                    <div class="log-expr">${item.expression}</div>
+                    <div>${item.results.map((r, i) => `G${i+1}: <strong>${r.total}</strong>`).join(' | ')}</div>
+                </div>
+            `).join('');
+        }
+
+        async function roll() {
+            if (state.isRolling) return;
+            state.isRolling = true;
+            initAudio();
+            
+            elements.resultContainer.classList.remove('visible');
+            elements.diceDisplay.classList.add('rolling-animation');
+            
+            // Animation loop
+            const duration = 800;
+            const startTime = Date.now();
+            
+            const animInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < duration) {
+                    updateDisplay(Math.floor(Math.random() * 20) + 1);
+                    playDiceSound();
+                } else {
+                    clearInterval(animInterval);
+                    finishRoll();
+                }
+            }, 80);
+
+            function finishRoll() {
+                const results = parseExpression(state.expression);
+                elements.diceDisplay.classList.remove('rolling-animation');
+                
+                if (results.length === 1) {
+                    updateDisplay(results[0].total);
+                } else {
+                    updateDisplay('Done!');
+                }
+                
+                renderResults(results);
+                addToLog(state.expression, results);
+                state.isRolling = false;
+            }
+        }
+
+        // --- Shake Detection ---
+        let lastShake = 0;
+        function handleMotion(event) {
+            const acc = event.accelerationIncludingGravity;
+            if (!acc) return;
+            
+            const magnitude = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
+            const threshold = 15;
+            const now = Date.now();
+            
+            if (magnitude > threshold && (now - lastShake > 1000)) {
+                lastShake = now;
+                playShakeSound();
+                roll();
+            }
+        }
+
+        async function requestShakePermission() {
+            initAudio();
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                try {
+                    const permission = await DeviceMotionEvent.requestPermission();
+                    if (permission === 'granted') {
+                        window.addEventListener('devicemotion', handleMotion);
+                        elements.permissionOverlay.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            } else {
+                window.addEventListener('devicemotion', handleMotion);
+                elements.permissionOverlay.style.display = 'none';
+            }
+        }
+
+        // --- Event Listeners ---
+        elements.rollButton.addEventListener('click', roll);
+        
+        document.getElementById('btn-settings').addEventListener('click', () => {
+            elements.expressionInput.value = state.expression;
+            elements.settingsModal.classList.add('active');
+        });
+
+        document.getElementById('btn-close-settings').addEventListener('click', () => {
+            elements.settingsModal.classList.remove('active');
+        });
+
+        document.getElementById('btn-cancel-settings').addEventListener('click', () => {
+            elements.settingsModal.classList.remove('active');
+        });
+
+        document.getElementById('btn-save-settings').addEventListener('click', () => {
+            const val = elements.expressionInput.value.trim();
+            if (val) {
+                state.expression = val;
+                updateDisplay(state.expression);
+                elements.settingsModal.classList.remove('active');
+            }
+        });
+
+        document.getElementById('btn-log').addEventListener('click', () => {
+            elements.logContainer.classList.toggle('active');
+            if (elements.logContainer.classList.contains('active')) {
+                elements.logContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        document.getElementById('btn-clear-log').addEventListener('click', () => {
+            state.history = [];
+            localStorage.removeItem('dice_history');
+            renderLog();
+        });
+
+        // Dice buttons in settings
+        document.querySelectorAll('.dice-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.getAttribute('data-val');
+                const input = elements.expressionInput;
+                
+                if (val === 'back') {
+                    input.value = input.value.slice(0, -1);
+                } else if (val === 'clear') {
+                    input.value = '';
+                } else {
+                    // Smart insertion
+                    const lastChar = input.value.slice(-1);
+                    if (val.startsWith('d') && (lastChar === '' || /[\+\-\|]/.test(lastChar))) {
+                        input.value += '1' + val;
+                    } else {
+                        input.value += val;
+                    }
+                }
+            });
+        });
+
+        // Close modal on outside click
+        elements.settingsModal.addEventListener('click', (e) => {
+            if (e.target === elements.settingsModal) {
+                elements.settingsModal.classList.remove('active');
+            }
+        });
+
+        // Initial setup
+        updateDisplay(state.expression);
+        renderLog();
+
+        // Show permission overlay for iOS or first interaction
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+            elements.permissionOverlay.style.display = 'block';
+        } else {
+            // For non-iOS, we still need a click to enable audio
+            elements.permissionOverlay.style.display = 'block';
+            window.addEventListener('devicemotion', handleMotion);
+        }
+
+        elements.permissionOverlay.addEventListener('click', requestShakePermission);
+
+    </script>
+</body>
+</html>
