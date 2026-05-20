@@ -677,13 +677,20 @@
         // --- Shake Detection ---
         let lastShake = 0;
         function handleMotion(event) {
-            const acc = event.accelerationIncludingGravity;
-            if (!acc) return;
-            
+            let acc = event.acceleration;
+            let threshold = 8; // Threshold when gravity is excluded
+
+            // Fallback to accelerationIncludingGravity if acceleration is not supported or returns null
+            if (!acc || acc.x === null || acc.y === null || acc.z === null) {
+                acc = event.accelerationIncludingGravity;
+                threshold = 18; // Higher threshold since gravity (approx 9.8 m/s²) is included
+            }
+
+            if (!acc || acc.x === null || acc.y === null || acc.z === null) return;
+
             const magnitude = Math.sqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
-            const threshold = 15;
             const now = Date.now();
-            
+
             if (magnitude > threshold && (now - lastShake > 1000)) {
                 lastShake = now;
                 playShakeSound();
@@ -693,18 +700,39 @@
 
         async function requestShakePermission() {
             initAudio();
+            
+            // Check if site settings blocked the accelerometer
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const status = await navigator.permissions.query({ name: 'accelerometer' });
+                    if (status.state === 'denied') {
+                        alert("Permissão para sensores de movimento foi negada. Por favor, ative os sensores nas configurações do seu navegador (Configurações do Site > Sensores de Movimento).");
+                        elements.permissionOverlay.style.display = 'none';
+                        return;
+                    }
+                } catch (e) {
+                    console.log("Permissions API query for accelerometer not supported", e);
+                }
+            }
+
             if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
                 try {
                     const permission = await DeviceMotionEvent.requestPermission();
                     if (permission === 'granted') {
                         window.addEventListener('devicemotion', handleMotion);
                         elements.permissionOverlay.style.display = 'none';
+                    } else {
+                        alert("Permissão negada. A função de chacoalhar não funcionará.");
+                        elements.permissionOverlay.style.display = 'none';
                     }
                 } catch (e) {
-                    console.error(e);
+                    console.error("Erro ao solicitar permissão no iOS:", e);
                 }
             } else {
-                window.addEventListener('devicemotion', handleMotion);
+                // Android / desktop or non-iOS browsers
+                if (typeof DeviceMotionEvent !== 'undefined') {
+                    window.addEventListener('devicemotion', handleMotion);
+                }
                 elements.permissionOverlay.style.display = 'none';
             }
         }
@@ -784,9 +812,18 @@
         if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
             elements.permissionOverlay.style.display = 'block';
         } else {
-            // For non-iOS, we still need a click to enable audio
+            // For non-iOS (Android/Desktop), we still need a click to enable audio
             elements.permissionOverlay.style.display = 'block';
-            window.addEventListener('devicemotion', handleMotion);
+            if (typeof DeviceMotionEvent !== 'undefined') {
+                window.addEventListener('devicemotion', handleMotion);
+            } else {
+                // DeviceMotionEvent is undefined (likely due to insecure HTTP or local file:// protocol)
+                if (window.isSecureContext === false) {
+                    elements.permissionOverlay.textContent = "Ativar Áudio (Shake requer HTTPS)";
+                } else {
+                    elements.permissionOverlay.textContent = "Ativar Áudio (Dispositivo sem acelerômetro)";
+                }
+            }
         }
 
         elements.permissionOverlay.addEventListener('click', requestShakePermission);
