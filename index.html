@@ -16,7 +16,6 @@
             --gold: #c9933a;
             --gold-light: #e8bc60;
             --gold-dim: #7a5820;
-            --red: #7a1414;
             --parchment: #e8d5b0;
             --parchment-dim: #a09070;
             --glow: rgba(200,150,50,0.35);
@@ -32,30 +31,20 @@
             background-color: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
         }
 
-        /* Ambient glow blobs */
         body::before {
-            content: '';
-            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
             background:
                 radial-gradient(ellipse 60% 40% at 20% 20%, rgba(80,60,160,0.06) 0%, transparent 70%),
                 radial-gradient(ellipse 50% 50% at 80% 80%, rgba(180,80,20,0.06) 0%, transparent 70%);
         }
 
-        /* Stars canvas */
         #stars-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-
-        /* Particles */
         #particles-container { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
-        .particle {
-            position: absolute; border-radius: 50%; pointer-events: none;
-            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
-        }
+        .particle { position: absolute; border-radius: 50%; pointer-events: none; transition: transform 0.8s ease-out, opacity 0.8s ease-out; }
 
         /* ── HEADER ── */
         header {
@@ -64,41 +53,30 @@
             padding: 22px 20px 10px;
             display: flex; justify-content: space-between; align-items: center;
         }
-
         .app-title {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 1rem; color: var(--gold);
-            letter-spacing: 3px; text-transform: uppercase;
+            font-family: 'Cinzel Decorative', serif; font-size: 1rem;
+            color: var(--gold); letter-spacing: 3px; text-transform: uppercase;
             text-shadow: 0 0 24px var(--glow);
         }
-
         .header-buttons { display: flex; gap: 6px; }
-
         .icon-btn {
-            background: rgba(200,150,50,0.07);
-            border: 1px solid rgba(200,150,50,0.18);
-            color: var(--parchment-dim);
-            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(200,150,50,0.07); border: 1px solid rgba(200,150,50,0.18);
+            color: var(--parchment-dim); width: 38px; height: 38px; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.2s; font-size: 1.1rem;
         }
         .icon-btn:hover { background: rgba(200,150,50,0.16); color: var(--gold); border-color: rgba(200,150,50,0.45); }
 
         /* Ornament divider */
         .ornament {
-            position: relative; z-index: 10;
-            width: 100%; max-width: 440px;
+            position: relative; z-index: 10; width: 100%; max-width: 440px;
             display: flex; align-items: center; gap: 10px; padding: 0 20px;
         }
         .ornament::before, .ornament::after {
             content: ''; flex: 1; height: 1px;
             background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
         }
-        .ornament-diamond {
-            width: 7px; height: 7px;
-            background: var(--gold); transform: rotate(45deg);
-            box-shadow: 0 0 8px var(--glow);
-        }
+        .ornament-diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 8px var(--glow); }
 
         /* ── MAIN ── */
         main {
@@ -109,115 +87,61 @@
         }
 
         /* ── DICE ARENA ── */
-        #dice-arena {
-            width: 100%; display: flex; flex-direction: column;
-            align-items: center; gap: 14px; padding: 16px 0 8px;
-        }
+        #dice-arena { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 16px 0 8px; }
 
         #die-svg-wrapper {
             position: relative; width: 190px; height: 190px;
             display: flex; align-items: center; justify-content: center;
         }
-
-        /* Ambient glow behind die */
         #die-glow {
             position: absolute; inset: -20px; border-radius: 50%;
             background: radial-gradient(circle, rgba(200,150,50,0.25) 0%, transparent 70%);
-            opacity: 0; transition: opacity 0.4s;
-            pointer-events: none;
+            opacity: 0; transition: opacity 0.4s; pointer-events: none;
         }
         #die-svg-wrapper.rolling #die-glow { opacity: 1; animation: glowBreathe 0.35s infinite alternate; }
         #die-svg-wrapper.crit #die-glow { opacity: 1; background: radial-gradient(circle, rgba(255,200,60,0.5) 0%, transparent 70%); }
+        @keyframes glowBreathe { from { transform: scale(0.88); opacity: 0.6; } to { transform: scale(1.12); opacity: 1; } }
 
-        @keyframes glowBreathe {
-            from { transform: scale(0.88); opacity: 0.6; }
-            to   { transform: scale(1.12); opacity: 1; }
-        }
-
-        #die-svg {
-            width: 190px; height: 190px;
-            filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-            overflow: visible;
-        }
-
-        /* Roll animation */
+        #die-svg { width: 190px; height: 190px; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6)); overflow: visible; }
         #die-svg.rolling { animation: spinRoll 0.28s linear infinite; }
-
         @keyframes spinRoll {
             0%   { transform: rotate(0deg) scale(1); }
             33%  { transform: rotate(120deg) scale(1.07); }
             66%  { transform: rotate(240deg) scale(0.94); }
             100% { transform: rotate(360deg) scale(1); }
         }
-
-        /* Settle animation */
         #die-svg.settle { animation: diceSettle 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        @keyframes diceSettle { 0% { transform: rotate(-18deg) scale(1.18); } 60% { transform: rotate(5deg) scale(0.96); } 100% { transform: rotate(0deg) scale(1); } }
+        #die-svg-wrapper.crit #die-svg { animation: critFlash 0.55s ease forwards; }
+        @keyframes critFlash { 0% { filter: drop-shadow(0 0 0 rgba(255,220,60,0)); } 40% { filter: drop-shadow(0 0 32px rgba(255,220,60,1)); } 100% { filter: drop-shadow(0 0 12px rgba(255,200,50,0.4)); } }
 
-        @keyframes diceSettle {
-            0%   { transform: rotate(-18deg) scale(1.18); }
-            60%  { transform: rotate(5deg) scale(0.96); }
-            100% { transform: rotate(0deg) scale(1); }
-        }
-
-        /* Crit flash */
-        #die-svg-wrapper.crit #die-svg {
-            animation: critFlash 0.55s ease forwards;
-        }
-        @keyframes critFlash {
-            0%   { filter: drop-shadow(0 0 0 rgba(255,220,60,0)); }
-            40%  { filter: drop-shadow(0 0 32px rgba(255,220,60,1)); }
-            100% { filter: drop-shadow(0 0 12px rgba(255,200,50,0.4)); }
-        }
-
-        #expression-display {
-            font-family: 'Cinzel', serif; font-size: 1rem;
-            color: var(--parchment-dim); letter-spacing: 3px;
-        }
-
+        #expression-display { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--parchment-dim); letter-spacing: 3px; }
         .crit-label {
             font-family: 'Cinzel Decorative', serif; font-size: 0.8rem;
             color: var(--gold-light); letter-spacing: 4px; text-transform: uppercase;
-            text-shadow: 0 0 12px var(--gold);
-            opacity: 0; height: 0; overflow: hidden;
+            text-shadow: 0 0 12px var(--gold); opacity: 0; height: 0; overflow: hidden;
             transition: opacity 0.4s, height 0.3s;
         }
         .crit-label.show { opacity: 1; height: 22px; }
 
-        /* ── RESULT CONTAINER ── */
+        /* ── RESULT ── */
         #result-container {
             width: 100%;
             background: linear-gradient(140deg, #181f32 0%, var(--card) 100%);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius); padding: 20px;
+            border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,150,50,0.08);
             display: flex; flex-direction: column; gap: 12px;
             opacity: 0; transform: translateY(14px) scale(0.98);
-            transition: all 0.4s cubic-bezier(0.34,1.2,0.64,1);
-            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34,1.2,0.64,1); pointer-events: none;
         }
         #result-container.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-
         .result-group { padding-bottom: 12px; border-bottom: 1px solid rgba(200,150,50,0.1); }
         .result-group:last-child { border-bottom: none; padding-bottom: 0; }
-
-        .group-title {
-            font-family: 'Cinzel', serif; font-size: 0.68rem;
-            color: var(--muted); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 4px;
-        }
-        .group-total {
-            font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700;
-            color: var(--gold-light); text-shadow: 0 0 20px rgba(230,180,80,0.35); line-height: 1;
-        }
+        .group-title { font-family: 'Cinzel', serif; font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 4px; }
+        .group-total { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold-light); text-shadow: 0 0 20px rgba(230,180,80,0.35); line-height: 1; }
         .group-details { font-size: 0.85rem; color: var(--muted); font-style: italic; margin-top: 4px; }
-
-        /* Individual dice roll chips */
         .rolls-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-        .roll-chip {
-            font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600;
-            padding: 3px 9px; border-radius: 20px;
-            background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.2);
-            color: var(--parchment-dim);
-        }
+        .roll-chip { font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.2); color: var(--parchment-dim); }
         .roll-chip.max { background: rgba(200,150,50,0.22); border-color: var(--gold); color: var(--gold-light); }
         .roll-chip.min { background: rgba(100,30,30,0.25); border-color: rgba(180,60,60,0.4); color: #c08080; }
 
@@ -229,30 +153,102 @@
             border: none; padding: 17px 40px; border-radius: 50px;
             cursor: pointer; width: 85%; max-width: 320px;
             box-shadow: 0 6px 22px rgba(170,110,20,0.45), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.2);
-            transition: all 0.15s ease; position: relative; overflow: hidden;
+            transition: all 0.15s; position: relative; overflow: hidden;
         }
-        #roll-button::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%);
-            border-radius: 50px;
-        }
+        #roll-button::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%); border-radius: 50px; }
         #roll-button:active { transform: scale(0.95) translateY(2px); box-shadow: 0 2px 10px rgba(170,110,20,0.4), inset 0 2px 4px rgba(0,0,0,0.2); }
         #roll-button:disabled { opacity: 0.65; cursor: not-allowed; }
 
-        .shake-hint {
-            font-size: 0.82rem; color: var(--muted);
-            display: flex; align-items: center; gap: 7px; font-style: italic;
-        }
+        .shake-hint { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 7px; font-style: italic; }
 
-        /* ── MODAL ── */
+        /* ── QUICK ROLLS ── */
+        #quick-rolls { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+        .qr-header {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .qr-title { font-family: 'Cinzel', serif; font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 3px; flex: 1; }
+
+        .btn-add-folder {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.3);
+            color: var(--gold); cursor: pointer; font-size: 1.1rem; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .btn-add-folder:hover { background: rgba(200,150,50,0.22); border-color: var(--gold); }
+
+        /* Folder card */
+        .folder-card {
+            background: linear-gradient(140deg, #181f32 0%, var(--card) 100%);
+            border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden;
+        }
+        .folder-header {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 12px; user-select: none; cursor: pointer;
+        }
+        .folder-chevron {
+            color: var(--gold-dim); font-size: 0.65rem; width: 18px; height: 18px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            transition: transform 0.22s; background: none; border: none; cursor: pointer;
+        }
+        .folder-card.open .folder-chevron { transform: rotate(90deg); }
+
+        .folder-name {
+            font-family: 'Cinzel', serif; font-size: 0.86rem; color: var(--parchment);
+            flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-folder-add {
+            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+            background: none; border: 1px solid rgba(200,150,50,0.2);
+            color: var(--gold-dim); cursor: pointer; font-size: 1rem; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-folder-add:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,150,50,0.1); }
+        .btn-folder-del {
+            width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+            background: none; border: none; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+            transition: all 0.2s; opacity: 0.55;
+        }
+        .btn-folder-del:hover { color: #d07070; background: rgba(180,30,30,0.15); opacity: 1; }
+
+        /* Folder body */
+        .folder-body { display: none; padding: 0 12px 12px; }
+        .folder-card.open .folder-body { display: block; }
+        .folder-rolls { display: flex; flex-wrap: wrap; gap: 8px; min-height: 28px; }
+        .folder-empty { font-size: 0.8rem; color: var(--muted); font-style: italic; padding: 2px 0; }
+
+        /* Saved roll chip */
+        .saved-roll-wrap { position: relative; display: inline-flex; }
+        .saved-roll-btn {
+            font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600;
+            padding: 6px 12px; border-radius: 20px;
+            background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.22);
+            color: var(--parchment); cursor: pointer; transition: all 0.15s;
+            max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .saved-roll-btn:hover { background: rgba(200,150,50,0.22); border-color: var(--gold); color: var(--gold-light); }
+        .saved-roll-btn:active { transform: scale(0.93); }
+        .saved-roll-del {
+            position: absolute; right: -7px; top: -7px;
+            width: 17px; height: 17px; border-radius: 50%;
+            background: rgba(120,20,20,0.95); color: rgba(255,160,160,0.9);
+            font-size: 10px; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0.25; transition: opacity 0.2s; pointer-events: auto; z-index: 2;
+            line-height: 1;
+        }
+        .saved-roll-wrap:hover .saved-roll-del { opacity: 1; }
+
+        /* ── MODALS (shared) ── */
         .modal {
-            position: fixed; inset: 0;
-            background: rgba(5,7,16,0.82); backdrop-filter: blur(5px);
+            position: fixed; inset: 0; background: rgba(5,7,16,0.82); backdrop-filter: blur(5px);
             display: flex; align-items: flex-end; justify-content: center;
             z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .modal.active { opacity: 1; pointer-events: auto; }
-
         .modal-content {
             background: linear-gradient(180deg, #1c2134 0%, #131724 100%);
             border: 1px solid rgba(200,150,50,0.22); border-bottom: none;
@@ -264,32 +260,21 @@
             box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
         }
         .modal.active .modal-content { transform: translateY(0); }
-
-        .modal-handle {
-            width: 36px; height: 4px;
-            background: rgba(200,150,50,0.28); border-radius: 2px; margin: 0 auto -4px;
-        }
+        .modal-handle { width: 36px; height: 4px; background: rgba(200,150,50,0.28); border-radius: 2px; margin: 0 auto -4px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h2 {
-            font-family: 'Cinzel', serif; font-size: 1rem;
-            color: var(--gold); letter-spacing: 3px; text-transform: uppercase;
-        }
+        .modal-header h2 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
 
-        label {
-            font-family: 'Cinzel', serif; font-size: 0.7rem;
-            color: var(--muted); text-transform: uppercase; letter-spacing: 2px;
-        }
+        label { font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
 
-        #expression-input {
+        input[type="text"] {
             background: rgba(0,0,0,0.35); border: 1px solid rgba(200,150,50,0.28);
-            color: var(--parchment); padding: 13px 16px; font-size: 1.2rem;
-            font-family: 'Cinzel', monospace; border-radius: 10px; width: 100%;
-            letter-spacing: 2px; transition: border-color 0.2s;
+            color: var(--parchment); padding: 13px 16px; font-size: 1.1rem;
+            font-family: 'EB Garamond', serif; border-radius: 10px; width: 100%;
+            transition: border-color 0.2s;
         }
-        #expression-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 14px rgba(200,150,50,0.18); }
+        input[type="text"]:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 14px rgba(200,150,50,0.18); }
 
         .dice-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
-
         .dice-btn {
             background: rgba(200,150,50,0.07); border: 1px solid rgba(200,150,50,0.18);
             color: var(--parchment); padding: 11px 4px; border-radius: 8px;
@@ -298,38 +283,24 @@
         }
         .dice-btn:hover { background: rgba(200,150,50,0.17); border-color: var(--gold); color: var(--gold); }
         .dice-btn:active { transform: scale(0.93); }
-        .dice-btn.special {
-            background: rgba(120,30,30,0.12); border-color: rgba(150,50,50,0.28); color: var(--parchment-dim);
-        }
+        .dice-btn.special { background: rgba(120,30,30,0.12); border-color: rgba(150,50,50,0.28); color: var(--parchment-dim); }
         .dice-btn.special:hover { background: rgba(150,40,40,0.28); border-color: #8b3333; color: #d08080; }
 
         .modal-footer { display: flex; gap: 10px; }
-        .btn {
-            flex: 1; padding: 13px; border-radius: 10px; border: none;
-            font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.85rem;
-            letter-spacing: 1px; cursor: pointer; transition: all 0.15s;
-        }
+        .btn { flex: 1; padding: 13px; border-radius: 10px; border: none; font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; }
         .btn-save { background: linear-gradient(180deg, #c9933a, #8a5c15); color: #180e00; box-shadow: 0 4px 12px rgba(170,110,20,0.3); }
         .btn-cancel { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid rgba(255,255,255,0.09); }
+
+
 
         /* ── LOG ── */
         #log-container { width: 100%; max-width: 480px; padding: 0 20px 32px; position: relative; z-index: 10; display: none; }
         #log-container.active { display: block; }
-
-        .log-card {
-            background: linear-gradient(140deg, #181f32 0%, var(--card) 100%);
-            border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px;
-        }
+        .log-card { background: linear-gradient(140deg, #181f32 0%, var(--card) 100%); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
         .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .log-header h3 {
-            font-family: 'Cinzel', serif; font-size: 0.78rem;
-            color: var(--gold); text-transform: uppercase; letter-spacing: 2.5px;
-        }
+        .log-header h3 { font-family: 'Cinzel', serif; font-size: 0.78rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2.5px; }
         .log-list { display: flex; flex-direction: column; gap: 7px; max-height: 260px; overflow-y: auto; }
-        .log-item {
-            background: rgba(0,0,0,0.22); padding: 9px 12px;
-            border-radius: 8px; font-size: 0.83rem; border-left: 2px solid rgba(200,150,50,0.25);
-        }
+        .log-item { background: rgba(0,0,0,0.22); padding: 9px 12px; border-radius: 8px; font-size: 0.83rem; border-left: 2px solid rgba(200,150,50,0.25); }
         .log-time { color: var(--muted); font-size: 0.7rem; margin-bottom: 2px; font-style: italic; }
         .log-expr { font-family: 'Cinzel', serif; font-size: 0.82rem; color: var(--gold-light); margin-bottom: 1px; }
 
@@ -337,10 +308,9 @@
         #permission-overlay {
             position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(180deg, #ecc060, #c9933a); color: #180e00;
-            padding: 13px 26px; border-radius: 50px;
-            font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;
-            z-index: 2000; box-shadow: 0 6px 22px rgba(170,110,20,0.5);
-            cursor: pointer; display: none; white-space: nowrap;
+            padding: 13px 26px; border-radius: 50px; font-family: 'Cinzel', serif;
+            font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; z-index: 2000;
+            box-shadow: 0 6px 22px rgba(170,110,20,0.5); cursor: pointer; display: none; white-space: nowrap;
         }
 
         /* Scrollbar */
@@ -380,11 +350,10 @@
 <div class="ornament"><div class="ornament-diamond"></div></div>
 
 <main>
+    <!-- Dice Arena -->
     <div id="dice-arena">
         <div id="die-svg-wrapper">
             <div id="die-glow"></div>
-
-            <!-- The die SVG — shapes toggled by JS -->
             <svg id="die-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" overflow="visible">
                 <defs>
                     <linearGradient id="dieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -401,104 +370,26 @@
                         <feComposite in="color" in2="blur" operator="in" result="glow"/>
                         <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
                     </filter>
-                    <filter id="innerShadow" x="-10%" y="-10%" width="120%" height="120%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
-                        <feOffset dx="0" dy="2" result="offset"/>
-                        <feComposite in="SourceGraphic" in2="offset" operator="over"/>
-                    </filter>
                 </defs>
-
-                <!-- d4 triangle -->
-                <polygon id="shape-d4" points="100,18 186,168 14,168"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <!-- inner lines d4 -->
-                <g id="inner-d4" style="display:none; opacity:0.12">
-                    <line x1="100" y1="18" x2="100" y2="168" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="14" y1="168" x2="143" y2="93" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="186" y1="168" x2="57" y2="93" stroke="#c9933a" stroke-width="1"/>
-                </g>
-
-                <!-- d6 square -->
-                <rect id="shape-d6" x="14" y="14" width="172" height="172" rx="18"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <!-- d6 corner dots decoration -->
-                <g id="inner-d6" style="display:none; opacity:0.15">
-                    <circle cx="38" cy="38" r="5" fill="#c9933a"/>
-                    <circle cx="162" cy="38" r="5" fill="#c9933a"/>
-                    <circle cx="38" cy="162" r="5" fill="#c9933a"/>
-                    <circle cx="162" cy="162" r="5" fill="#c9933a"/>
-                </g>
-
-                <!-- d8 diamond -->
-                <polygon id="shape-d8" points="100,10 190,100 100,190 10,100"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <g id="inner-d8" style="display:none; opacity:0.12">
-                    <line x1="100" y1="10" x2="10" y2="100" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="100" y1="10" x2="190" y2="100" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="10" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="190" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/>
-                </g>
-
-                <!-- d10 elongated diamond / kite -->
-                <polygon id="shape-d10" points="100,10 180,75 155,178 45,178 20,75"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <g id="inner-d10" style="display:none; opacity:0.12">
-                    <line x1="100" y1="10" x2="45" y2="178" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="100" y1="10" x2="155" y2="178" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="20" y1="75" x2="180" y2="75" stroke="#c9933a" stroke-width="1"/>
-                </g>
-
-                <!-- d12 pentagon -->
-                <polygon id="shape-d12" points="100,12 184,68 153,168 47,168 16,68"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <g id="inner-d12" style="display:none; opacity:0.12">
-                    <line x1="100" y1="12" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="100" y1="12" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="16" y1="68" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="184" y1="68" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="16" y1="68" x2="184" y2="68" stroke="#c9933a" stroke-width="1"/>
-                </g>
-
-                <!-- d20 triangle (wide) -->
-                <polygon id="shape-d20" points="100,12 188,162 12,162"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <g id="inner-d20" style="display:none; opacity:0.12">
-                    <line x1="100" y1="12" x2="100" y2="162" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="12" y1="162" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="188" y1="162" x2="56" y2="87" stroke="#c9933a" stroke-width="1"/>
-                    <line x1="56" y1="87" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/>
-                </g>
-
-                <!-- d100 circle -->
-                <circle id="shape-d100" cx="100" cy="100" r="88"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-                <circle id="inner-d100" cx="100" cy="100" r="72"
-                    fill="none" stroke="#c9933a" stroke-width="1" opacity="0.12"
-                    style="display:none"/>
-
-                <!-- default/generic (d30, d3, d2 etc) — use d20 shape -->
-                <polygon id="shape-default" points="100,12 188,162 12,162"
-                    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5"
-                    style="display:none"/>
-
-                <!-- Number display -->
-                <text id="die-number" x="100" y="110" text-anchor="middle" dominant-baseline="middle"
-                    font-family="Cinzel, serif" font-weight="700" font-size="52" fill="#e8bc60"
-                    filter="url(#numGlow)">?</text>
-
-                <!-- Subtle die type label -->
-                <text id="die-label" x="100" y="152" text-anchor="middle" dominant-baseline="middle"
-                    font-family="Cinzel, serif" font-size="13" fill="rgba(180,140,50,0.5)" letter-spacing="2">D20</text>
+                <polygon id="shape-d4"  points="100,18 186,168 14,168"            fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d4" style="display:none; opacity:0.12"><line x1="100" y1="18" x2="100" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="14" y1="168" x2="143" y2="93" stroke="#c9933a" stroke-width="1"/><line x1="186" y1="168" x2="57" y2="93" stroke="#c9933a" stroke-width="1"/></g>
+                <rect  id="shape-d6"  x="14" y="14" width="172" height="172" rx="18" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d6" style="display:none; opacity:0.15"><circle cx="38" cy="38" r="5" fill="#c9933a"/><circle cx="162" cy="38" r="5" fill="#c9933a"/><circle cx="38" cy="162" r="5" fill="#c9933a"/><circle cx="162" cy="162" r="5" fill="#c9933a"/></g>
+                <polygon id="shape-d8"  points="100,10 190,100 100,190 10,100"    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d8" style="display:none; opacity:0.12"><line x1="100" y1="10" x2="10" y2="100" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="10" x2="190" y2="100" stroke="#c9933a" stroke-width="1"/><line x1="10" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/><line x1="190" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/></g>
+                <polygon id="shape-d10" points="100,10 180,75 155,178 45,178 20,75" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d10" style="display:none; opacity:0.12"><line x1="100" y1="10" x2="45" y2="178" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="10" x2="155" y2="178" stroke="#c9933a" stroke-width="1"/><line x1="20" y1="75" x2="180" y2="75" stroke="#c9933a" stroke-width="1"/></g>
+                <polygon id="shape-d12" points="100,12 184,68 153,168 47,168 16,68" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d12" style="display:none; opacity:0.12"><line x1="100" y1="12" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="12" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="16" y1="68" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="184" y1="68" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="16" y1="68" x2="184" y2="68" stroke="#c9933a" stroke-width="1"/></g>
+                <polygon id="shape-d20" points="100,12 188,162 12,162"             fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <g id="inner-d20" style="display:none; opacity:0.12"><line x1="100" y1="12" x2="100" y2="162" stroke="#c9933a" stroke-width="1"/><line x1="12" y1="162" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/><line x1="188" y1="162" x2="56" y2="87" stroke="#c9933a" stroke-width="1"/><line x1="56" y1="87" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/></g>
+                <circle id="shape-d100" cx="100" cy="100" r="88"                 fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <circle id="inner-d100" cx="100" cy="100" r="72" fill="none" stroke="#c9933a" stroke-width="1" opacity="0.12" style="display:none"/>
+                <polygon id="shape-default" points="100,12 188,162 12,162"        fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <text id="die-number" x="100" y="110" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" font-weight="700" font-size="52" fill="#e8bc60" filter="url(#numGlow)">?</text>
+                <text id="die-label"  x="100" y="152" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" font-size="13" fill="rgba(180,140,50,0.5)" letter-spacing="2">D20</text>
             </svg>
         </div>
-
         <div class="crit-label" id="crit-label">⚔ CRÍTICO! ⚔</div>
         <div id="expression-display">1d20+5</div>
     </div>
@@ -508,43 +399,48 @@
     <button id="roll-button">⚔ &nbsp;ROLAR DADOS</button>
 
     <div class="shake-hint">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="2" width="14" height="20" rx="2"/>
-            <line x1="12" y1="18" x2="12.01" y2="18"/>
-        </svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
         Chacoalhe para rolar
+    </div>
+
+    <!-- ── QUICK ROLLS ── -->
+    <div id="quick-rolls">
+        <div class="qr-header">
+            <span class="qr-title">Rolagens Rápidas</span>
+            <button class="btn-add-folder" id="btn-add-folder" title="Nova pasta">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/>
+                </svg>
+            </button>
+        </div>
+        <div id="folders-container"></div>
     </div>
 </main>
 
+<!-- Log -->
 <div id="log-container">
     <div class="log-card">
         <div class="log-header">
             <h3>Histórico</h3>
-            <button class="btn btn-cancel" id="btn-clear-log"
-                style="padding:5px 14px; font-size:0.72rem; flex:none; border-radius:6px;">Limpar</button>
+            <button class="btn btn-cancel" id="btn-clear-log" style="padding:5px 14px;font-size:0.72rem;flex:none;border-radius:6px;">Limpar</button>
         </div>
         <div class="log-list" id="log-list"></div>
     </div>
 </div>
 
-<!-- Settings Modal -->
+<!-- ── MODAL: Settings ── -->
 <div class="modal" id="settings-modal">
     <div class="modal-content">
         <div class="modal-handle"></div>
         <div class="modal-header">
             <h2>Configuração</h2>
-            <button class="icon-btn" id="btn-close-settings"
-                style="width:32px; height:32px; font-size:1.3rem;">&times;</button>
+            <button class="icon-btn" id="btn-close-settings" style="width:32px;height:32px;font-size:1.3rem;">&times;</button>
         </div>
-
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
             <label for="expression-input">Expressão de Dados</label>
             <input type="text" id="expression-input" placeholder="Ex: 1d20+5 | 2d6">
-            <p style="font-size:0.8rem; color:var(--muted); font-style:italic;">
-                Use | para separar grupos de dados.
-            </p>
+            <p style="font-size:0.8rem;color:var(--muted);font-style:italic;">Use | para separar grupos.</p>
         </div>
-
         <div class="dice-grid">
             <button class="dice-btn" data-val="d2">d2</button>
             <button class="dice-btn" data-val="d3">d3</button>
@@ -562,7 +458,6 @@
             <button class="dice-btn special" data-val="back">⌫</button>
             <button class="dice-btn special" data-val="clear">C</button>
         </div>
-
         <div class="modal-footer">
             <button class="btn btn-cancel" id="btn-cancel-settings">Cancelar</button>
             <button class="btn btn-save" id="btn-save-settings">Salvar</button>
@@ -570,23 +465,95 @@
     </div>
 </div>
 
+<!-- ── MODAL: New Folder ── -->
+<div class="modal" id="new-folder-modal">
+    <div class="modal-content" style="gap:16px;">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>Nova Pasta</h2>
+            <button class="icon-btn" id="btn-close-new-folder" style="width:32px;height:32px;font-size:1.3rem;">&times;</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <label for="folder-name-input">Nome da Pasta</label>
+            <input type="text" id="folder-name-input" placeholder="Ex: Guerreiro, Magias, Itens…" maxlength="30">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" id="btn-cancel-new-folder">Cancelar</button>
+            <button class="btn btn-save" id="btn-save-new-folder">Criar Pasta</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL: New Roll ── -->
+<div class="modal" id="new-roll-modal">
+    <div class="modal-content">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>Nova Rolagem</h2>
+            <button class="icon-btn" id="btn-close-new-roll" style="width:32px;height:32px;font-size:1.3rem;">&times;</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <label for="roll-name-input">Nome da Rolagem</label>
+            <input type="text" id="roll-name-input" placeholder="Ex: Ataque, Dano com Espada…" maxlength="24">
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <label>Expressão</label>
+            <input type="text" id="new-roll-expr-display" placeholder="Ex: 1d20+5 | 2d6+3"
+                style="font-family:'Cinzel',monospace;font-size:1.1rem;letter-spacing:2px;color:var(--gold-light);text-shadow:0 0 10px rgba(230,180,80,0.2);">
+        </div>
+
+        <div class="dice-grid" id="new-roll-dice-grid">
+            <button class="dice-btn new-roll-calc-btn" data-val="d2">d2</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d3">d3</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d4">d4</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d6">d6</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d8">d8</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d10">d10</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d12">d12</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d20">d20</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d30">d30</button>
+            <button class="dice-btn new-roll-calc-btn" data-val="d100">d%</button>
+            <button class="dice-btn special new-roll-calc-btn" data-val="+">+</button>
+            <button class="dice-btn special new-roll-calc-btn" data-val="-">-</button>
+            <button class="dice-btn special new-roll-calc-btn" data-val="|">|</button>
+            <button class="dice-btn special new-roll-calc-btn" data-val="back">⌫</button>
+            <button class="dice-btn special new-roll-calc-btn" data-val="clear">C</button>
+        </div>
+
+        <p style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-top:-8px;">
+            Use | para separar grupos. Ex: <span style="color:var(--gold-dim)">1d20+5 | 2d6+3</span>
+        </p>
+
+        <div class="modal-footer">
+            <button class="btn btn-cancel" id="btn-cancel-new-roll">Cancelar</button>
+            <button class="btn btn-save" id="btn-save-new-roll">Salvar Rolagem</button>
+        </div>
+    </div>
+</div>
+
 <div id="permission-overlay">✦ Ativar Shake &amp; Áudio ✦</div>
 
 <script>
-// =====================================================
-//  RPG DICE ROLLER — Enhanced Visual Edition
-// =====================================================
+// =============================================================
+//  RPG DICE ROLLER — with Quick Rolls / Folders
+// =============================================================
 
-// ── State ──
+// ── State ──────────────────────────────────────────────────
 const state = {
     expression: '1d20+5',
     history: JSON.parse(localStorage.getItem('dice_history') || '[]'),
+    folders: JSON.parse(localStorage.getItem('dice_folders') || '[]'),
+    activeFolderId: null,
     isRolling: false,
     audioEnabled: false,
     audioCtx: null
 };
 
-// ── Elements ──
+let newRollExpr = '';
+
+// ── Elements ───────────────────────────────────────────────
 const el = {
     dieSvg:          document.getElementById('die-svg'),
     dieWrapper:      document.getElementById('die-svg-wrapper'),
@@ -601,456 +568,467 @@ const el = {
     logList:         document.getElementById('log-list'),
     permOverlay:     document.getElementById('permission-overlay'),
     critLabel:       document.getElementById('crit-label'),
-    particles:       document.getElementById('particles-container')
+    particles:       document.getElementById('particles-container'),
+    foldersContainer:document.getElementById('folders-container'),
+    newFolderModal:  document.getElementById('new-folder-modal'),
+    folderNameInput: document.getElementById('folder-name-input'),
+    newRollModal:    document.getElementById('new-roll-modal'),
+    rollNameInput:   document.getElementById('roll-name-input'),
+    newRollExprDisp: document.getElementById('new-roll-expr-display')
 };
 
-// ── Die shape config: (numY = number vertical center, labelY = small label, fs = font-size) ──
+// ── Die shape config ───────────────────────────────────────
 const DIE_CONFIG = {
-    d4:    { shapes: ['d4','inner-d4'],     numY: 118, labelY: 158, fs: 50 },
-    d6:    { shapes: ['d6','inner-d6'],     numY: 100, labelY: 158, fs: 62 },
-    d8:    { shapes: ['d8','inner-d8'],     numY: 100, labelY: 158, fs: 60 },
-    d10:   { shapes: ['d10','inner-d10'],   numY: 108, labelY: 162, fs: 56 },
-    d12:   { shapes: ['d12','inner-d12'],   numY: 105, labelY: 160, fs: 56 },
-    d20:   { shapes: ['d20','inner-d20'],   numY: 112, labelY: 150, fs: 52 },
-    d100:  { shapes: ['d100','inner-d100'], numY: 100, labelY: 155, fs: 42 },
-    default:{ shapes: ['default'],          numY: 112, labelY: 150, fs: 52 }
+    d4:    { shapes:['d4','inner-d4'],     numY:118, labelY:158, fs:50 },
+    d6:    { shapes:['d6','inner-d6'],     numY:100, labelY:158, fs:62 },
+    d8:    { shapes:['d8','inner-d8'],     numY:100, labelY:158, fs:60 },
+    d10:   { shapes:['d10','inner-d10'],   numY:108, labelY:162, fs:56 },
+    d12:   { shapes:['d12','inner-d12'],   numY:105, labelY:160, fs:56 },
+    d20:   { shapes:['d20','inner-d20'],   numY:112, labelY:150, fs:52 },
+    d100:  { shapes:['d100','inner-d100'], numY:100, labelY:155, fs:42 },
+    default:{ shapes:['default'],          numY:112, labelY:150, fs:52 }
 };
-
-const ALL_SHAPE_IDS = ['shape-d4','inner-d4','shape-d6','inner-d6','shape-d8','inner-d8',
+const ALL_SHAPES = ['shape-d4','inner-d4','shape-d6','inner-d6','shape-d8','inner-d8',
     'shape-d10','inner-d10','shape-d12','inner-d12','shape-d20','inner-d20',
     'shape-d100','inner-d100','shape-default'];
 
 function activateDieShape(dieType) {
-    // Hide all
-    ALL_SHAPE_IDS.forEach(id => {
-        const el2 = document.getElementById(id);
-        if (el2) el2.style.display = 'none';
-    });
+    ALL_SHAPES.forEach(id => { const e = document.getElementById(id); if(e) e.style.display='none'; });
     const cfg = DIE_CONFIG[dieType] || DIE_CONFIG.default;
     cfg.shapes.forEach(key => {
-        const shapeEl = document.getElementById('shape-' + key);
-        const innerEl = document.getElementById(key); // for inner-xxx
-        if (shapeEl) shapeEl.style.display = '';
-        if (innerEl && key.startsWith('inner-')) innerEl.style.display = '';
+        const s = document.getElementById('shape-'+key);
+        const i = document.getElementById(key);
+        if(s) s.style.display = '';
+        if(i && key.startsWith('inner-')) i.style.display = '';
     });
     return cfg;
 }
 
 function getPrimaryDie(expr) {
-    const matches = expr.match(/\d*d(\d+)/gi) || [];
-    if (!matches.length) return 'd6';
-    const sides = matches.map(m => parseInt(m.split('d')[1]));
-    const max = Math.max(...sides);
-    const key = 'd' + max;
+    const m = expr.match(/\d*d(\d+)/gi) || [];
+    if (!m.length) return 'd6';
+    const sides = m.map(s => parseInt(s.split('d')[1]));
+    const key = 'd' + Math.max(...sides);
     return DIE_CONFIG[key] ? key : 'default';
 }
 
-// ── Stars ──
+// ── Helpers ────────────────────────────────────────────────
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function saveFolders() { localStorage.setItem('dice_folders', JSON.stringify(state.folders)); }
+
+// ── Stars ──────────────────────────────────────────────────
 function initStars() {
     const canvas = document.getElementById('stars-canvas');
     const ctx = canvas.getContext('2d');
     function draw() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < 90; i++) {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            const r = Math.random() * 1.1;
-            const a = Math.random() * 0.45 + 0.05;
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(let i=0;i<90;i++) {
             ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(210,180,110,${a})`;
+            ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.1, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(210,180,110,${Math.random()*0.45+0.05})`;
             ctx.fill();
         }
     }
-    draw();
-    window.addEventListener('resize', draw);
+    draw(); window.addEventListener('resize', draw);
 }
 
-// ── Particles ──
+// ── Particles ──────────────────────────────────────────────
 function spawnParticles(cx, cy, isCrit) {
     const colors = ['#e8bc60','#c9933a','#fffbe0','#d4a843','#ffffff'];
     const count = isCrit ? 28 : 14;
-    for (let i = 0; i < count; i++) {
+    for(let i=0;i<count;i++) {
         const p = document.createElement('div');
         p.className = 'particle';
-        const size = isCrit ? 3 + Math.random() * 7 : 2 + Math.random() * 5;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const angle = Math.random() * Math.PI * 2;
-        const speed = isCrit ? 80 + Math.random() * 160 : 50 + Math.random() * 100;
-        const dx = Math.cos(angle) * speed;
-        const dy = Math.sin(angle) * speed - (isCrit ? 100 : 60);
-        const dur = 0.5 + Math.random() * 0.5;
-
-        p.style.cssText = `
-            left:${cx}px; top:${cy}px;
-            width:${size}px; height:${size}px;
-            background:${color};
-            border-radius:${Math.random() > 0.4 ? '50%' : '2px'};
-            transform: translate(-50%,-50%);
-            transition: transform ${dur}s ease-out, opacity ${dur}s ease-out;
-        `;
+        const sz  = isCrit ? 3+Math.random()*7 : 2+Math.random()*5;
+        const ang = Math.random()*Math.PI*2;
+        const spd = isCrit ? 80+Math.random()*160 : 50+Math.random()*100;
+        const dur = 0.5+Math.random()*0.5;
+        p.style.cssText = `left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;
+            background:${colors[Math.floor(Math.random()*colors.length)]};
+            border-radius:${Math.random()>0.4?'50%':'2px'};transform:translate(-50%,-50%);
+            transition:transform ${dur}s ease-out,opacity ${dur}s ease-out;`;
         el.particles.appendChild(p);
         requestAnimationFrame(() => {
-            p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-            p.style.opacity = '0';
+            p.style.transform=`translate(calc(-50% + ${Math.cos(ang)*spd}px),calc(-50% + ${Math.sin(ang)*spd-(isCrit?100:60)}px))`;
+            p.style.opacity='0';
         });
-        setTimeout(() => p.remove(), (dur + 0.1) * 1000);
+        setTimeout(()=>p.remove(),(dur+0.1)*1000);
     }
 }
 
-// ── Audio ──
+// ── Audio ──────────────────────────────────────────────────
 function initAudio() {
-    if (state.audioEnabled) return;
-    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(state.audioEnabled) return;
+    state.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
     state.audioEnabled = true;
-    el.permOverlay.style.display = 'none';
+    el.permOverlay.style.display='none';
 }
-
 function playTick() {
-    if (!state.audioCtx) return;
-    const ctx = state.audioCtx;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(120 + Math.random() * 120, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.09);
-    gain.gain.setValueAtTime(0.18, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + 0.1);
+    if(!state.audioCtx) return;
+    const ctx=state.audioCtx, osc=ctx.createOscillator(), gain=ctx.createGain();
+    osc.type='triangle'; osc.frequency.setValueAtTime(120+Math.random()*120,ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(35,ctx.currentTime+0.09);
+    gain.gain.setValueAtTime(0.18,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.09);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.1);
 }
-
 function playShakeSound() {
-    if (!state.audioCtx) return;
-    const ctx = state.audioCtx;
-    const sz = ctx.sampleRate * 0.1;
-    const buf = ctx.createBuffer(1, sz, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < sz; i++) data[i] = Math.random() * 2 - 1;
-    const noise = ctx.createBufferSource();
-    noise.buffer = buf;
-    const flt = ctx.createBiquadFilter();
-    flt.type = 'bandpass'; flt.frequency.value = 2000;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    noise.connect(flt); flt.connect(gain); gain.connect(ctx.destination);
-    noise.start();
+    if(!state.audioCtx) return;
+    const ctx=state.audioCtx, sz=ctx.sampleRate*0.1, buf=ctx.createBuffer(1,sz,ctx.sampleRate);
+    const data=buf.getChannelData(0); for(let i=0;i<sz;i++) data[i]=Math.random()*2-1;
+    const noise=ctx.createBufferSource(); noise.buffer=buf;
+    const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=2000;
+    const gain=ctx.createGain(); gain.gain.setValueAtTime(0.1,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1);
+    noise.connect(flt); flt.connect(gain); gain.connect(ctx.destination); noise.start();
 }
-
 function playCrit() {
-    if (!state.audioCtx) return;
-    const ctx = state.audioCtx;
-    [330, 440, 554, 660, 880].forEach((f, i) => {
-        const osc = ctx.createOscillator();
-        const g   = ctx.createGain();
-        osc.type = 'sine'; osc.frequency.value = f;
-        const t = ctx.currentTime + i * 0.07;
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(0.14, t + 0.03);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
-        osc.connect(g); g.connect(ctx.destination);
-        osc.start(t); osc.stop(t + 0.3);
+    if(!state.audioCtx) return;
+    const ctx=state.audioCtx;
+    [330,440,554,660,880].forEach((f,i)=>{
+        const osc=ctx.createOscillator(), g=ctx.createGain(); osc.type='sine'; osc.frequency.value=f;
+        const t=ctx.currentTime+i*0.07;
+        g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.14,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.28);
+        osc.connect(g); g.connect(ctx.destination); osc.start(t); osc.stop(t+0.3);
     });
 }
 
-// ── Parser ──
+// ── Parser ─────────────────────────────────────────────────
 function parseExpression(expr) {
-    const groups = expr.split('|').map(g => g.trim()).filter(Boolean);
-    return groups.map(groupStr => {
-        const result = { original: groupStr, total: 0, details: [] };
-        const regex = /([+-]?\s*\d*d\d+)|([+-]?\s*\d+)/g;
-        let m;
-        while ((m = regex.exec(groupStr)) !== null) {
-            const part = m[0].replace(/\s+/g, '');
-            if (part.includes('d')) {
-                let [cnt, sides] = part.split('d');
-                let sign = 1;
-                if (cnt.startsWith('+')) cnt = cnt.slice(1);
-                else if (cnt.startsWith('-')) { sign = -1; cnt = cnt.slice(1); }
-                cnt = parseInt(cnt) || 1;
-                sides = parseInt(sides);
-                const rolls = [];
-                for (let i = 0; i < cnt; i++) {
-                    const r = Math.floor(Math.random() * sides) + 1;
-                    rolls.push(r);
-                    result.total += r * sign;
-                }
-                result.details.push({ type: 'dice', expr: part, rolls, sides, sign });
+    return expr.split('|').map(g=>g.trim()).filter(Boolean).map(groupStr => {
+        const result={original:groupStr,total:0,details:[]};
+        const regex=/([+-]?\s*\d*d\d+)|([+-]?\s*\d+)/g; let m;
+        while((m=regex.exec(groupStr))!==null){
+            const part=m[0].replace(/\s+/g,'');
+            if(part.includes('d')){
+                let [cnt,sides]=part.split('d'); let sign=1;
+                if(cnt.startsWith('+')) cnt=cnt.slice(1);
+                else if(cnt.startsWith('-')){sign=-1;cnt=cnt.slice(1);}
+                cnt=parseInt(cnt)||1; sides=parseInt(sides);
+                const rolls=[];
+                for(let i=0;i<cnt;i++){const r=Math.floor(Math.random()*sides)+1;rolls.push(r);result.total+=r*sign;}
+                result.details.push({type:'dice',expr:part,rolls,sides,sign});
             } else {
-                const val = parseInt(part);
-                if (!isNaN(val)) {
-                    result.total += val;
-                    result.details.push({ type: 'mod', val });
-                }
+                const val=parseInt(part); if(!isNaN(val)){result.total+=val;result.details.push({type:'mod',val});}
             }
         }
         return result;
     });
 }
 
-// ── Render results ──
+// ── Render results ─────────────────────────────────────────
 function renderResults(results) {
-    el.resultContainer.innerHTML = '';
-    results.forEach((res, idx) => {
-        const div = document.createElement('div');
-        div.className = 'result-group';
-        const label = results.length > 1
-            ? `Grupo ${idx+1} &mdash; ${res.original}`
-            : res.original;
-
-        // Build chips for dice rolls
-        let chipsHTML = '';
-        res.details.forEach(d => {
-            if (d.type === 'dice') {
-                chipsHTML += '<div class="rolls-chips">';
-                d.rolls.forEach(r => {
-                    const cls = r === d.sides ? 'max' : (r === 1 ? 'min' : '');
-                    chipsHTML += `<span class="roll-chip ${cls}">${r}</span>`;
-                });
-                chipsHTML += `<span style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--muted);align-self:center;margin-left:2px;">${d.expr}</span></div>`;
+    el.resultContainer.innerHTML='';
+    results.forEach((res,idx)=>{
+        const div=document.createElement('div'); div.className='result-group';
+        const label=results.length>1?`Grupo ${idx+1} &mdash; ${esc(res.original)}`:esc(res.original);
+        let chipsHTML='';
+        res.details.forEach(d=>{
+            if(d.type==='dice'){
+                chipsHTML+='<div class="rolls-chips">';
+                d.rolls.forEach(r=>{const cls=r===d.sides?'max':r===1?'min':''; chipsHTML+=`<span class="roll-chip ${cls}">${r}</span>`;});
+                chipsHTML+=`<span style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--muted);align-self:center;margin-left:2px;">${esc(d.expr)}</span></div>`;
             }
         });
-        const mods = res.details.filter(d => d.type === 'mod');
-        const modStr = mods.length
-            ? mods.map(d => (d.val >= 0 ? '+' : '') + d.val).join(' ')
-            : '';
-
-        div.innerHTML = `
-            <div class="group-title">${label}</div>
-            <div class="group-total">${res.total}</div>
-            ${chipsHTML}
-            ${modStr ? `<div class="group-details">Modificador: ${modStr}</div>` : ''}
-        `;
+        const mods=res.details.filter(d=>d.type==='mod');
+        const modStr=mods.length?mods.map(d=>(d.val>=0?'+':'')+d.val).join(' '):'';
+        div.innerHTML=`<div class="group-title">${label}</div><div class="group-total">${res.total}</div>${chipsHTML}${modStr?`<div class="group-details">Modificador: ${modStr}</div>`:''}`;
         el.resultContainer.appendChild(div);
     });
     el.resultContainer.classList.add('visible');
 }
 
-// ── Log ──
-function addToLog(expression, results) {
-    state.history.unshift({ time: new Date().toLocaleTimeString(), expression, results });
-    if (state.history.length > 50) state.history.pop();
-    localStorage.setItem('dice_history', JSON.stringify(state.history));
+// ── Log ────────────────────────────────────────────────────
+function addToLog(expression,results){
+    state.history.unshift({time:new Date().toLocaleTimeString(),expression,results});
+    if(state.history.length>50) state.history.pop();
+    localStorage.setItem('dice_history',JSON.stringify(state.history));
     renderLog();
 }
-
-function renderLog() {
-    el.logList.innerHTML = state.history.map(item => `
+function renderLog(){
+    el.logList.innerHTML=state.history.map(item=>`
         <div class="log-item">
-            <div class="log-time">${item.time}</div>
-            <div class="log-expr">${item.expression}</div>
-            <div style="font-size:0.82rem; color:var(--parchment-dim)">
-                ${item.results.map((r, i) =>
-                    (item.results.length > 1 ? `G${i+1}: ` : '') +
-                    `<strong style="color:var(--gold)">${r.total}</strong>`
-                ).join(' &nbsp;|&nbsp; ')}
+            <div class="log-time">${esc(item.time)}</div>
+            <div class="log-expr">${esc(item.expression)}</div>
+            <div style="font-size:0.82rem;color:var(--parchment-dim)">
+                ${item.results.map((r,i)=>(item.results.length>1?`G${i+1}: `:'')+`<strong style="color:var(--gold)">${r.total}</strong>`).join(' &nbsp;|&nbsp; ')}
             </div>
-        </div>
-    `).join('');
+        </div>`).join('');
 }
 
-// ── Update display (idle state) ──
-function updateDisplay(expr) {
-    el.exprDisplay.textContent = expr;
+// ── Display (idle) ─────────────────────────────────────────
+function updateDisplay(expr){
+    el.exprDisplay.textContent=expr;
     el.critLabel.classList.remove('show');
     el.dieWrapper.classList.remove('crit');
-
-    const dieType = getPrimaryDie(expr);
-    const cfg = activateDieShape(dieType);
-
-    el.dieNumber.setAttribute('y', cfg.numY);
-    el.dieNumber.setAttribute('font-size', 22);
-    el.dieNumber.textContent = expr;
-    el.dieLabel.setAttribute('y', cfg.labelY);
-    el.dieLabel.textContent = dieType.toUpperCase();
+    const dieType=getPrimaryDie(expr);
+    const cfg=activateDieShape(dieType);
+    el.dieNumber.setAttribute('y',cfg.numY);
+    el.dieNumber.setAttribute('font-size',22);
+    el.dieNumber.textContent=expr;
+    el.dieLabel.setAttribute('y',cfg.labelY);
+    el.dieLabel.textContent=dieType.toUpperCase();
 }
 
-// ── Roll ──
-async function roll() {
-    if (state.isRolling) return;
-    state.isRolling = true;
-    initAudio();
-
+// ── Roll ───────────────────────────────────────────────────
+async function roll(){
+    if(state.isRolling) return;
+    state.isRolling=true; initAudio();
     el.resultContainer.classList.remove('visible');
-    el.rollButton.disabled = true;
-    el.critLabel.classList.remove('show');
-    el.dieWrapper.classList.remove('crit');
-
-    const dieType = getPrimaryDie(state.expression);
-    const cfg = activateDieShape(dieType);
-    const dieSides = parseInt(dieType.replace('d', '')) || 20;
-
-    // Show "?" while rolling
-    el.dieNumber.setAttribute('y', cfg.numY);
-    el.dieNumber.setAttribute('font-size', cfg.fs);
-    el.dieNumber.textContent = '?';
-    el.dieLabel.setAttribute('y', cfg.labelY);
-    el.dieLabel.textContent = dieType.toUpperCase();
-
-    // Start animation
-    el.dieWrapper.classList.add('rolling');
-    el.dieSvg.classList.add('rolling');
-
-    const duration = 900;
-    const start = Date.now();
-
-    const interval = setInterval(() => {
-        if (Date.now() - start < duration) {
-            el.dieNumber.textContent = Math.floor(Math.random() * dieSides) + 1;
-            playTick();
-        } else {
-            clearInterval(interval);
-            finalize();
-        }
-    }, 75);
-
-    function finalize() {
-        const results = parseExpression(state.expression);
-
-        el.dieWrapper.classList.remove('rolling');
-        el.dieSvg.classList.remove('rolling');
-        el.dieSvg.classList.add('settle');
-        setTimeout(() => el.dieSvg.classList.remove('settle'), 500);
-
-        // Show result on die face
-        const displayVal = results.length === 1 ? results[0].total : '✦';
-        el.dieNumber.setAttribute('font-size', results.length === 1 ? cfg.fs : 40);
-        el.dieNumber.textContent = displayVal;
-
-        // Crit check: single d20 roll of exactly 20
-        let isCrit = false;
-        if (dieType === 'd20' && results.length === 1) {
-            const firstDetail = results[0].details[0];
-            if (firstDetail && firstDetail.type === 'dice' &&
-                firstDetail.rolls.length === 1 && firstDetail.rolls[0] === 20) {
-                isCrit = true;
-                setTimeout(() => {
-                    el.dieWrapper.classList.add('crit');
-                    el.critLabel.classList.add('show');
-                    playCrit();
-                }, 80);
+    el.rollButton.disabled=true;
+    el.critLabel.classList.remove('show'); el.dieWrapper.classList.remove('crit');
+    const dieType=getPrimaryDie(state.expression);
+    const cfg=activateDieShape(dieType);
+    const sides=parseInt(dieType.replace('d',''))||20;
+    el.dieNumber.setAttribute('y',cfg.numY); el.dieNumber.setAttribute('font-size',cfg.fs); el.dieNumber.textContent='?';
+    el.dieLabel.setAttribute('y',cfg.labelY); el.dieLabel.textContent=dieType.toUpperCase();
+    el.dieWrapper.classList.add('rolling'); el.dieSvg.classList.add('rolling');
+    const start=Date.now();
+    const interval=setInterval(()=>{
+        if(Date.now()-start<900){ el.dieNumber.textContent=Math.floor(Math.random()*sides)+1; playTick(); }
+        else { clearInterval(interval); finalize(); }
+    },75);
+    function finalize(){
+        const results=parseExpression(state.expression);
+        el.dieWrapper.classList.remove('rolling'); el.dieSvg.classList.remove('rolling');
+        el.dieSvg.classList.add('settle'); setTimeout(()=>el.dieSvg.classList.remove('settle'),500);
+        const displayVal=results.length===1?results[0].total:'✦';
+        el.dieNumber.setAttribute('font-size',results.length===1?cfg.fs:40); el.dieNumber.textContent=displayVal;
+        let isCrit=false;
+        if(dieType==='d20'&&results.length===1){
+            const d=results[0].details[0];
+            if(d&&d.type==='dice'&&d.rolls.length===1&&d.rolls[0]===20){
+                isCrit=true;
+                setTimeout(()=>{ el.dieWrapper.classList.add('crit'); el.critLabel.classList.add('show'); playCrit(); },80);
             }
         }
-
-        // Spawn particles from button position
-        const btnRect = el.rollButton.getBoundingClientRect();
-        spawnParticles(btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2, isCrit);
-
-        renderResults(results);
-        addToLog(state.expression, results);
-        state.isRolling = false;
-        el.rollButton.disabled = false;
+        const r=el.rollButton.getBoundingClientRect();
+        spawnParticles(r.left+r.width/2, r.top+r.height/2, isCrit);
+        renderResults(results); addToLog(state.expression,results);
+        state.isRolling=false; el.rollButton.disabled=false;
     }
 }
 
-// ── Shake ──
-let lastShake = 0;
-function handleMotion(event) {
-    let acc = event.acceleration;
-    let thr = 8;
-    if (!acc || acc.x === null) { acc = event.accelerationIncludingGravity; thr = 18; }
-    if (!acc || acc.x === null) return;
-    const mag = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
-    const now = Date.now();
-    if (mag > thr && now - lastShake > 1000) { lastShake = now; playShakeSound(); roll(); }
+// ── Shake ──────────────────────────────────────────────────
+let lastShake=0;
+function handleMotion(event){
+    let acc=event.acceleration, thr=8;
+    if(!acc||acc.x===null){acc=event.accelerationIncludingGravity;thr=18;}
+    if(!acc||acc.x===null) return;
+    const mag=Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z), now=Date.now();
+    if(mag>thr&&now-lastShake>1000){lastShake=now;playShakeSound();roll();}
 }
-
-async function requestShakePermission() {
+async function requestShakePermission(){
     initAudio();
-    if (navigator.permissions?.query) {
-        try {
-            const s = await navigator.permissions.query({ name: 'accelerometer' });
-            if (s.state === 'denied') {
-                alert('Permissão negada. Ative os sensores nas configurações do navegador.');
-                el.permOverlay.style.display = 'none';
-                return;
-            }
-        } catch(e) {}
-    }
-    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-        try {
-            const perm = await DeviceMotionEvent.requestPermission();
-            if (perm === 'granted') window.addEventListener('devicemotion', handleMotion);
-            else alert('Permissão negada para sensores de movimento.');
-        } catch(e) { console.error(e); }
-        el.permOverlay.style.display = 'none';
+    if(navigator.permissions?.query){try{const s=await navigator.permissions.query({name:'accelerometer'});if(s.state==='denied'){alert('Permissão negada.');el.permOverlay.style.display='none';return;}}catch(e){}}
+    if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+        try{const p=await DeviceMotionEvent.requestPermission();if(p==='granted')window.addEventListener('devicemotion',handleMotion);else alert('Permissão negada.');}catch(e){console.error(e);}
+        el.permOverlay.style.display='none';
     } else {
-        if (typeof DeviceMotionEvent !== 'undefined') window.addEventListener('devicemotion', handleMotion);
-        el.permOverlay.style.display = 'none';
+        if(typeof DeviceMotionEvent!=='undefined') window.addEventListener('devicemotion',handleMotion);
+        el.permOverlay.style.display='none';
     }
 }
 
-// ── Event Listeners ──
+// =============================================================
+//  FOLDERS / QUICK ROLLS
+// =============================================================
+
+function renderFolders(){
+    if(!state.folders.length){
+        el.foldersContainer.innerHTML='<p style="font-size:0.8rem;color:var(--muted);font-style:italic;text-align:center;padding:6px 0 2px;">Nenhuma pasta ainda. Clique + para criar.</p>';
+        return;
+    }
+    el.foldersContainer.innerHTML=state.folders.map(folder=>`
+        <div class="folder-card ${folder.open?'open':''}" data-folder-id="${esc(folder.id)}">
+            <div class="folder-header" data-action="toggle" data-folder-id="${esc(folder.id)}">
+                <button class="folder-chevron" data-action="toggle" data-folder-id="${esc(folder.id)}">▶</button>
+                <span class="folder-name">${esc(folder.name)}</span>
+                <button class="btn-folder-add" data-action="add-roll" data-folder-id="${esc(folder.id)}" title="Adicionar rolagem">+</button>
+                <button class="btn-folder-del" data-action="del-folder" data-folder-id="${esc(folder.id)}" title="Excluir pasta">✕</button>
+            </div>
+            <div class="folder-body">
+                <div class="folder-rolls">
+                    ${folder.rolls.length===0
+                        ? '<span class="folder-empty">Vazio — clique + para adicionar rolagens.</span>'
+                        : folder.rolls.map(roll=>`
+                            <div class="saved-roll-wrap">
+                                <button class="saved-roll-btn"
+                                    data-action="exec-roll"
+                                    data-folder-id="${esc(folder.id)}"
+                                    data-roll-id="${esc(roll.id)}"
+                                    data-expr="${esc(roll.expr)}"
+                                    title="${esc(roll.expr)}">${esc(roll.name)}</button>
+                                <button class="saved-roll-del"
+                                    data-action="del-roll"
+                                    data-folder-id="${esc(folder.id)}"
+                                    data-roll-id="${esc(roll.id)}"
+                                    title="Excluir">×</button>
+                            </div>`).join('')
+                    }
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+// Event delegation for folder container
+el.foldersContainer.addEventListener('click', e => {
+    const target = e.target.closest('[data-action]');
+    if(!target) return;
+    const action    = target.getAttribute('data-action');
+    const folderId  = target.getAttribute('data-folder-id');
+    const rollId    = target.getAttribute('data-roll-id');
+
+    if(action==='toggle'){
+        e.stopPropagation();
+        const f=state.folders.find(f=>f.id===folderId);
+        if(f){f.open=!f.open; saveFolders(); renderFolders();}
+    }
+    else if(action==='add-roll'){
+        e.stopPropagation();
+        state.activeFolderId=folderId;
+        openNewRollModal();
+    }
+    else if(action==='del-folder'){
+        e.stopPropagation();
+        if(confirm('Excluir a pasta e todas as rolagens dentro dela?')){
+            state.folders=state.folders.filter(f=>f.id!==folderId);
+            saveFolders(); renderFolders();
+        }
+    }
+    else if(action==='exec-roll'){
+        const expr=target.getAttribute('data-expr');
+        state.expression=expr;
+        updateDisplay(expr);
+        roll();
+    }
+    else if(action==='del-roll'){
+        e.stopPropagation();
+        const f=state.folders.find(f=>f.id===folderId);
+        if(f){f.rolls=f.rolls.filter(r=>r.id!==rollId); saveFolders(); renderFolders();}
+    }
+});
+
+// New Folder modal
+document.getElementById('btn-add-folder').addEventListener('click',()=>{
+    el.folderNameInput.value='';
+    el.newFolderModal.classList.add('active');
+    setTimeout(()=>el.folderNameInput.focus(),350);
+});
+document.getElementById('btn-close-new-folder').addEventListener('click',()=>el.newFolderModal.classList.remove('active'));
+document.getElementById('btn-cancel-new-folder').addEventListener('click',()=>el.newFolderModal.classList.remove('active'));
+el.newFolderModal.addEventListener('click',e=>{if(e.target===el.newFolderModal)el.newFolderModal.classList.remove('active');});
+document.getElementById('btn-save-new-folder').addEventListener('click',()=>{
+    const name=el.folderNameInput.value.trim();
+    if(!name) return;
+    state.folders.push({id:genId(), name, rolls:[], open:true});
+    saveFolders(); renderFolders();
+    el.newFolderModal.classList.remove('active');
+});
+el.folderNameInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter') document.getElementById('btn-save-new-folder').click();
+});
+
+// New Roll modal
+function openNewRollModal(){
+    newRollExpr='';
+    el.rollNameInput.value='';
+    el.newRollExprDisp.value='';
+    el.newRollModal.classList.add('active');
+    setTimeout(()=>el.rollNameInput.focus(),350);
+}
+function updateNewRollExprDisplay(){
+    el.newRollExprDisp.value = newRollExpr;
+}
+document.getElementById('btn-close-new-roll').addEventListener('click',()=>el.newRollModal.classList.remove('active'));
+document.getElementById('btn-cancel-new-roll').addEventListener('click',()=>el.newRollModal.classList.remove('active'));
+el.newRollModal.addEventListener('click',e=>{if(e.target===el.newRollModal)el.newRollModal.classList.remove('active');});
+
+// Calculator buttons inside new-roll modal
+document.querySelectorAll('.new-roll-calc-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        // Sync state from what the user may have typed manually
+        newRollExpr = el.newRollExprDisp.value;
+        const val=btn.getAttribute('data-val');
+        if(val==='back'){ newRollExpr=newRollExpr.slice(0,-1); }
+        else if(val==='clear'){ newRollExpr=''; }
+        else {
+            const last=newRollExpr.slice(-1);
+            if(val.startsWith('d')&&(last===''||/[\+\-\|]/.test(last)))
+                newRollExpr+='1'+val;
+            else
+                newRollExpr+=val;
+        }
+        updateNewRollExprDisplay();
+        el.newRollExprDisp.focus();
+    });
+});
+
+// Keep newRollExpr in sync when user types directly
+el.newRollExprDisp.addEventListener('input', () => { newRollExpr = el.newRollExprDisp.value; });
+
+document.getElementById('btn-save-new-roll').addEventListener('click',()=>{
+    const name=el.rollNameInput.value.trim();
+    const expr=el.newRollExprDisp.value.trim();
+    if(!name){ el.rollNameInput.focus(); return; }
+    if(!expr){ el.newRollExprDisp.style.borderColor='rgba(200,50,50,0.6)'; setTimeout(()=>el.newRollExprDisp.style.borderColor='',1200); el.newRollExprDisp.focus(); return; }
+    const f=state.folders.find(f=>f.id===state.activeFolderId);
+    if(!f) return;
+    f.rolls.push({id:genId(), name, expr});
+    saveFolders(); renderFolders();
+    el.newRollModal.classList.remove('active');
+});
+
+// =============================================================
+//  SETTINGS MODAL
+// =============================================================
 el.rollButton.addEventListener('click', roll);
 
-document.getElementById('btn-settings').addEventListener('click', () => {
-    el.exprInput.value = state.expression;
-    el.settingsModal.classList.add('active');
+document.getElementById('btn-settings').addEventListener('click',()=>{
+    el.exprInput.value=state.expression; el.settingsModal.classList.add('active');
 });
-document.getElementById('btn-close-settings').addEventListener('click', () => el.settingsModal.classList.remove('active'));
-document.getElementById('btn-cancel-settings').addEventListener('click', () => el.settingsModal.classList.remove('active'));
-
-document.getElementById('btn-save-settings').addEventListener('click', () => {
-    const val = el.exprInput.value.trim();
-    if (val) {
-        state.expression = val;
-        updateDisplay(val);
-        el.settingsModal.classList.remove('active');
-    }
+document.getElementById('btn-close-settings').addEventListener('click',()=>el.settingsModal.classList.remove('active'));
+document.getElementById('btn-cancel-settings').addEventListener('click',()=>el.settingsModal.classList.remove('active'));
+document.getElementById('btn-save-settings').addEventListener('click',()=>{
+    const val=el.exprInput.value.trim();
+    if(val){state.expression=val; updateDisplay(val); el.settingsModal.classList.remove('active');}
 });
+el.settingsModal.addEventListener('click',e=>{if(e.target===el.settingsModal)el.settingsModal.classList.remove('active');});
 
-document.getElementById('btn-log').addEventListener('click', () => {
-    el.logContainer.classList.toggle('active');
-    if (el.logContainer.classList.contains('active'))
-        el.logContainer.scrollIntoView({ behavior: 'smooth' });
-});
-
-document.getElementById('btn-clear-log').addEventListener('click', () => {
-    state.history = [];
-    localStorage.removeItem('dice_history');
-    renderLog();
-});
-
-document.querySelectorAll('.dice-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const val = btn.getAttribute('data-val');
-        const inp = el.exprInput;
-        if (val === 'back') { inp.value = inp.value.slice(0,-1); }
-        else if (val === 'clear') { inp.value = ''; }
+document.querySelectorAll('#settings-modal .dice-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        const val=btn.getAttribute('data-val'), inp=el.exprInput;
+        if(val==='back') inp.value=inp.value.slice(0,-1);
+        else if(val==='clear') inp.value='';
         else {
-            const last = inp.value.slice(-1);
-            if (val.startsWith('d') && (last === '' || /[\+\-\|]/.test(last)))
-                inp.value += '1' + val;
-            else
-                inp.value += val;
+            const last=inp.value.slice(-1);
+            inp.value+=(val.startsWith('d')&&(last===''||/[\+\-\|]/.test(last)))?'1'+val:val;
         }
     });
 });
 
-el.settingsModal.addEventListener('click', e => {
-    if (e.target === el.settingsModal) el.settingsModal.classList.remove('active');
+document.getElementById('btn-log').addEventListener('click',()=>{
+    el.logContainer.classList.toggle('active');
+    if(el.logContainer.classList.contains('active')) el.logContainer.scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('btn-clear-log').addEventListener('click',()=>{
+    state.history=[]; localStorage.removeItem('dice_history'); renderLog();
 });
 
 el.permOverlay.addEventListener('click', requestShakePermission);
 
-// ── Init ──
+// ── Init ───────────────────────────────────────────────────
 initStars();
 updateDisplay(state.expression);
 renderLog();
+renderFolders();
 
-if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    el.permOverlay.style.display = 'block';
+if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+    el.permOverlay.style.display='block';
 } else {
-    el.permOverlay.style.display = 'block';
-    if (typeof DeviceMotionEvent !== 'undefined') window.addEventListener('devicemotion', handleMotion);
-    else {
-        el.permOverlay.textContent = window.isSecureContext === false
-            ? '✦ Ativar Áudio (requer HTTPS) ✦'
-            : '✦ Ativar Áudio ✦';
-    }
+    el.permOverlay.style.display='block';
+    if(typeof DeviceMotionEvent!=='undefined') window.addEventListener('devicemotion',handleMotion);
+    else el.permOverlay.textContent=window.isSecureContext===false?'✦ Ativar Áudio (requer HTTPS) ✦':'✦ Ativar Áudio ✦';
 }
 </script>
 </body>
