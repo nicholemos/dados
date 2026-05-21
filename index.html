@@ -364,33 +364,122 @@
                         <stop offset="0%" style="stop-color:#e0b850"/>
                         <stop offset="100%" style="stop-color:#6a4a10"/>
                     </linearGradient>
+                    <!-- Facet Gradients for 3D depth -->
+                    <linearGradient id="facGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#353d5e"/>
+                        <stop offset="100%" style="stop-color:#1c2235"/>
+                    </linearGradient>
+                    <linearGradient id="facGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#232b45"/>
+                        <stop offset="100%" style="stop-color:#101522"/>
+                    </linearGradient>
+                    <linearGradient id="facGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#151c2f"/>
+                        <stop offset="100%" style="stop-color:#080a13"/>
+                    </linearGradient>
                     <filter id="numGlow" x="-30%" y="-30%" width="160%" height="160%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
-                        <feFlood flood-color="#e8bc60" flood-opacity="0.6" result="color"/>
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur"/>
+                        <feFlood flood-color="#e8bc60" flood-opacity="0.8" result="color"/>
                         <feComposite in="color" in2="blur" operator="in" result="glow"/>
                         <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
                     </filter>
                 </defs>
-                <polygon id="shape-d4"  points="100,18 186,168 14,168"            fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d4" style="display:none; opacity:0.12"><line x1="100" y1="18" x2="100" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="14" y1="168" x2="143" y2="93" stroke="#c9933a" stroke-width="1"/><line x1="186" y1="168" x2="57" y2="93" stroke="#c9933a" stroke-width="1"/></g>
-                <rect  id="shape-d6"  x="14" y="14" width="172" height="172" rx="18" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d6" style="display:none; opacity:0.15"><circle cx="38" cy="38" r="5" fill="#c9933a"/><circle cx="162" cy="38" r="5" fill="#c9933a"/><circle cx="38" cy="162" r="5" fill="#c9933a"/><circle cx="162" cy="162" r="5" fill="#c9933a"/></g>
-                <polygon id="shape-d8"  points="100,10 190,100 100,190 10,100"    fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d8" style="display:none; opacity:0.12"><line x1="100" y1="10" x2="10" y2="100" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="10" x2="190" y2="100" stroke="#c9933a" stroke-width="1"/><line x1="10" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/><line x1="190" y1="100" x2="100" y2="190" stroke="#c9933a" stroke-width="1"/></g>
-                <polygon id="shape-d10" points="100,10 180,75 155,178 45,178 20,75" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d10" style="display:none; opacity:0.12"><line x1="100" y1="10" x2="45" y2="178" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="10" x2="155" y2="178" stroke="#c9933a" stroke-width="1"/><line x1="20" y1="75" x2="180" y2="75" stroke="#c9933a" stroke-width="1"/></g>
-                <polygon id="shape-d12" points="100,12 184,68 153,168 47,168 16,68" fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d12" style="display:none; opacity:0.12"><line x1="100" y1="12" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="100" y1="12" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="16" y1="68" x2="153" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="184" y1="68" x2="47" y2="168" stroke="#c9933a" stroke-width="1"/><line x1="16" y1="68" x2="184" y2="68" stroke="#c9933a" stroke-width="1"/></g>
-                <polygon id="shape-d20" points="100,12 188,162 12,162"             fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <g id="inner-d20" style="display:none; opacity:0.12"><line x1="100" y1="12" x2="100" y2="162" stroke="#c9933a" stroke-width="1"/><line x1="12" y1="162" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/><line x1="188" y1="162" x2="56" y2="87" stroke="#c9933a" stroke-width="1"/><line x1="56" y1="87" x2="144" y2="87" stroke="#c9933a" stroke-width="1"/></g>
-                <circle id="shape-d100" cx="100" cy="100" r="88"                 fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
-                <circle id="inner-d100" cx="100" cy="100" r="72" fill="none" stroke="#c9933a" stroke-width="1" opacity="0.12" style="display:none"/>
-                <polygon id="shape-default" points="100,12 188,162 12,162"        fill="url(#dieGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" style="display:none"/>
+                <!-- D4 3D Faceted -->
+                <g id="shape-d4" style="display:none">
+                    <polygon points="100,15 15,165 100,115" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="100,15 185,165 100,115" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="15,165 185,165 100,115" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
+                <g id="inner-d4" style="display:none"></g>
+
+                <!-- D6 3D Tilted Cube -->
+                <g id="shape-d6" style="display:none">
+                    <polygon points="40,40 65,15 185,15 160,40" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="160,40 185,15 185,135 160,160" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <rect x="40" y="40" width="120" height="120" rx="8" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="2"/>
+                </g>
+                <g id="inner-d6" style="display:none"></g>
+
+                <!-- D8 3D Octahedron -->
+                <g id="shape-d8" style="display:none">
+                    <polygon points="100,15 15,100 100,100" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="100,15 185,100 100,100" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="100,185 15,100 100,100" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                    <polygon points="100,185 185,100 100,100" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
+                <g id="inner-d8" style="display:none"></g>
+
+                <!-- D10 3D Pentagonal Trapezohedron -->
+                <g id="shape-d10" style="display:none">
+                    <polygon points="100,15 20,85 100,105" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,15 180,85 100,105" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="20,85 45,145 100,105" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="180,85 155,145 100,105" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="45,145 100,185 100,105" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="155,145 100,185 100,105" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                </g>
+                <g id="inner-d10" style="display:none"></g>
+
+                <!-- D12 3D Dodecahedron -->
+                <g id="shape-d12" style="display:none">
+                    <polygon points="57,86 100,55 138,47 100,15 62,47" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,55 143,86 162,120 181,74 138,47" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="143,86 126,136 100,165 150,169 162,120" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="126,136 74,136 38,120 50,169 100,165" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="74,136 57,86 62,47 19,74 38,120" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,55 143,86 126,136 74,136 57,86" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
+                <g id="inner-d12" style="display:none"></g>
+
+                <!-- D20 3D Icosahedron -->
+                <g id="shape-d20" style="display:none">
+                    <polygon points="100,10 100,60 22,55" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,10 178,55 100,60" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,55 143,135 100,60" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,55 178,145 143,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,145 100,190 143,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,190 57,135 143,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,190 22,145 57,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="22,145 22,55 57,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="22,55 100,60 57,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,60 143,135 57,135" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
+                <g id="inner-d20" style="display:none"></g>
+
+                <!-- D100 3D Decagonal Gem Sphere -->
+                <g id="shape-d100" style="display:none">
+                    <polygon points="100,15 150,31 138,47 100,35" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="150,31 181,74 162,80 138,47" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="181,74 181,126 162,120 162,80" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="181,126 150,169 138,153 162,120" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="150,169 100,185 100,165 138,153" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,185 50,169 62,153 100,165" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="50,169 19,126 38,120 62,153" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="19,126 19,74 38,80 38,120" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="19,74 50,31 62,47 38,80" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="50,31 100,15 100,35 62,47" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,35 138,47 162,80 162,120 138,153 100,165 62,153 38,120 38,80 62,47" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
+                <g id="inner-d100" style="display:none"></g>
+
+                <g id="shape-default" style="display:none">
+                    <polygon points="100,10 100,60 22,55" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,10 178,55 100,60" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,55 143,135 100,60" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,55 178,145 143,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="178,145 100,190 143,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,190 57,135 143,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,190 22,145 57,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="22,145 22,55 57,135" fill="url(#facGrad3)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="22,55 100,60 57,135" fill="url(#facGrad2)" stroke="url(#edgeGrad)" stroke-width="1.2"/>
+                    <polygon points="100,60 143,135 57,135" fill="url(#facGrad1)" stroke="url(#edgeGrad)" stroke-width="1.5"/>
+                </g>
                 <text id="die-number" x="100" y="110" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" font-weight="700" font-size="52" fill="#e8bc60" filter="url(#numGlow)">?</text>
-                <text id="die-label"  x="100" y="152" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" font-size="13" fill="rgba(180,140,50,0.5)" letter-spacing="2">D20</text>
+                <text id="die-label"  x="100" y="152" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" font-weight="700" font-size="14" fill="#e8bc60" letter-spacing="3" style="text-shadow: 0 0 6px rgba(232,188,96,0.55); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.85));">D20</text>
             </svg>
         </div>
         <div class="crit-label" id="crit-label">⚔ CRÍTICO! ⚔</div>
+        <div id="roll-label" style="display:none; font-family:'Cinzel', serif; font-size:0.9rem; color:var(--gold); margin-bottom:2px; text-transform:uppercase; letter-spacing:2.5px; text-shadow:0 0 10px var(--glow);"></div>
         <div id="expression-display">1d20+5</div>
     </div>
 
@@ -543,6 +632,7 @@
 // ── State ──────────────────────────────────────────────────
 const state = {
     expression: '1d20+5',
+    rollLabel: '',
     history: JSON.parse(localStorage.getItem('dice_history') || '[]'),
     folders: JSON.parse(localStorage.getItem('dice_folders') || '[]'),
     activeFolderId: null,
@@ -559,6 +649,7 @@ const el = {
     dieWrapper:      document.getElementById('die-svg-wrapper'),
     dieNumber:       document.getElementById('die-number'),
     dieLabel:        document.getElementById('die-label'),
+    rollLabel:       document.getElementById('roll-label'),
     exprDisplay:     document.getElementById('expression-display'),
     resultContainer: document.getElementById('result-container'),
     rollButton:      document.getElementById('roll-button'),
@@ -721,7 +812,10 @@ function renderResults(results) {
     el.resultContainer.innerHTML='';
     results.forEach((res,idx)=>{
         const div=document.createElement('div'); div.className='result-group';
-        const label=results.length>1?`Grupo ${idx+1} &mdash; ${esc(res.original)}`:esc(res.original);
+        let label=results.length>1?`Grupo ${idx+1} &mdash; ${esc(res.original)}`:esc(res.original);
+        if(state.rollLabel && idx === 0){
+            label=`<span style="color:var(--gold-light); font-weight:700;">${esc(state.rollLabel)}</span> &mdash; ${label}`;
+        }
         let chipsHTML='';
         res.details.forEach(d=>{
             if(d.type==='dice'){
@@ -740,7 +834,7 @@ function renderResults(results) {
 
 // ── Log ────────────────────────────────────────────────────
 function addToLog(expression,results){
-    state.history.unshift({time:new Date().toLocaleTimeString(),expression,results});
+    state.history.unshift({time:new Date().toLocaleTimeString(),expression,label:state.rollLabel||'',results});
     if(state.history.length>50) state.history.pop();
     localStorage.setItem('dice_history',JSON.stringify(state.history));
     renderLog();
@@ -749,7 +843,7 @@ function renderLog(){
     el.logList.innerHTML=state.history.map(item=>`
         <div class="log-item">
             <div class="log-time">${esc(item.time)}</div>
-            <div class="log-expr">${esc(item.expression)}</div>
+            <div class="log-expr">${item.label?`<span style="color:var(--gold);font-weight:700;">${esc(item.label)}</span> &bull; `:''}${esc(item.expression)}</div>
             <div style="font-size:0.82rem;color:var(--parchment-dim)">
                 ${item.results.map((r,i)=>(item.results.length>1?`G${i+1}: `:'')+`<strong style="color:var(--gold)">${r.total}</strong>`).join(' &nbsp;|&nbsp; ')}
             </div>
@@ -759,6 +853,14 @@ function renderLog(){
 // ── Display (idle) ─────────────────────────────────────────
 function updateDisplay(expr){
     el.exprDisplay.textContent=expr;
+    if(el.rollLabel){
+        if(state.rollLabel){
+            el.rollLabel.textContent=state.rollLabel;
+            el.rollLabel.style.display='block';
+        } else {
+            el.rollLabel.style.display='none';
+        }
+    }
     el.critLabel.classList.remove('show');
     el.dieWrapper.classList.remove('crit');
     const dieType=getPrimaryDie(expr);
@@ -898,6 +1000,7 @@ el.foldersContainer.addEventListener('click', e => {
     }
     else if(action==='exec-roll'){
         const expr=target.getAttribute('data-expr');
+        state.rollLabel=target.textContent.trim();
         state.expression=expr;
         updateDisplay(expr);
         roll();
@@ -982,7 +1085,11 @@ document.getElementById('btn-save-new-roll').addEventListener('click',()=>{
 // =============================================================
 //  SETTINGS MODAL
 // =============================================================
-el.rollButton.addEventListener('click', roll);
+el.rollButton.addEventListener('click', () => {
+    state.rollLabel = '';
+    updateDisplay(state.expression);
+    roll();
+});
 
 document.getElementById('btn-settings').addEventListener('click',()=>{
     el.exprInput.value=state.expression; el.settingsModal.classList.add('active');
@@ -991,7 +1098,12 @@ document.getElementById('btn-close-settings').addEventListener('click',()=>el.se
 document.getElementById('btn-cancel-settings').addEventListener('click',()=>el.settingsModal.classList.remove('active'));
 document.getElementById('btn-save-settings').addEventListener('click',()=>{
     const val=el.exprInput.value.trim();
-    if(val){state.expression=val; updateDisplay(val); el.settingsModal.classList.remove('active');}
+    if(val){
+        state.rollLabel = '';
+        state.expression=val;
+        updateDisplay(val);
+        el.settingsModal.classList.remove('active');
+    }
 });
 el.settingsModal.addEventListener('click',e=>{if(e.target===el.settingsModal)el.settingsModal.classList.remove('active');});
 
