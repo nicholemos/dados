@@ -9,18 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #07090f;
-            --surface: #0e1120;
-            --card: #141826;
-            --card-border: rgba(180,140,50,0.18);
+            --bg: #06070c;
+            --surface: #0b0e1a;
+            --card: rgba(18, 23, 38, 0.7);
+            --card-border: rgba(201, 147, 58, 0.16);
             --gold: #c9933a;
             --gold-light: #e8bc60;
             --gold-dim: #7a5820;
             --parchment: #e8d5b0;
             --parchment-dim: #a09070;
-            --glow: rgba(200,150,50,0.35);
-            --text: #d8c8a8;
-            --muted: #7a6a52;
+            --glow: rgba(200, 150, 50, 0.28);
+            --text: #e2d8c3;
+            --muted: #8e7d65;
             --radius: 16px;
         }
 
@@ -33,18 +33,48 @@
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
+            position: relative;
         }
 
         body::before {
             content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
             background:
-                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(80,60,160,0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 50% 50% at 80% 80%, rgba(180,80,20,0.06) 0%, transparent 70%);
+                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(80,60,160,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 80% 80%, rgba(180,80,20,0.04) 0%, transparent 70%);
         }
 
         #stars-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
         #particles-container { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
         .particle { position: absolute; border-radius: 50%; pointer-events: none; transition: transform 0.8s ease-out, opacity 0.8s ease-out; }
+
+        /* ── SCREEN EFFECT OVERLAYS ── */
+        #screen-effect-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0;
+            transition: opacity 0.15s ease-out;
+        }
+        #screen-effect-overlay.flash-success {
+            background: radial-gradient(circle, rgba(232, 188, 96, 0.45) 0%, rgba(200, 150, 50, 0.15) 100%);
+            opacity: 1;
+            animation: fadeOutEffect 0.8s ease-out forwards;
+        }
+        #screen-effect-overlay.flash-fumble {
+            background: radial-gradient(circle, rgba(200, 30, 30, 0.5) 0%, rgba(100, 10, 10, 0.25) 100%);
+            opacity: 1;
+            animation: fadeOutEffect 1.2s ease-out forwards;
+        }
+        @keyframes fadeOutEffect {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        body.shake-screen {
+            animation: screenShake 0.4s ease-in-out;
+        }
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-4px, 2px) rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: translate(4px, -2px) rotate(1deg); }
+        }
 
         /* ── HEADER ── */
         header {
@@ -56,7 +86,7 @@
         .app-title {
             font-family: 'Cinzel Decorative', serif; font-size: 1rem;
             color: var(--gold); letter-spacing: 3px; text-transform: uppercase;
-            text-shadow: 0 0 24px var(--glow);
+            text-shadow: 0 0 20px var(--glow);
         }
         .header-buttons { display: flex; gap: 6px; }
         .icon-btn {
@@ -65,7 +95,7 @@
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s; font-size: 1.1rem;
         }
-        .icon-btn:hover { background: rgba(200,150,50,0.16); color: var(--gold); border-color: rgba(200,150,50,0.45); }
+        .icon-btn:hover { background: rgba(200,150,50,0.16); color: var(--gold); border-color: rgba(200,150,50,0.45); box-shadow: 0 0 10px rgba(200,150,50,0.25); }
 
         /* Ornament divider */
         .ornament {
@@ -90,49 +120,110 @@
         #dice-arena { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 16px 0 8px; }
 
         #die-svg-wrapper {
-            position: relative; width: 190px; height: 190px;
+            position: relative; width: 230px; height: 230px;
             display: flex; align-items: center; justify-content: center;
         }
+
+        /* Runic ring background */
+        #runic-ring-container {
+            position: absolute;
+            width: 230px; height: 230px;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #runic-ring {
+            width: 100%; height: 100%;
+            animation: rotateRunicRing 45s linear infinite;
+            filter: drop-shadow(0 0 6px rgba(200, 150, 50, 0.2));
+            transition: filter 0.3s, transform 0.3s;
+        }
+        @keyframes rotateRunicRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #die-svg-wrapper.rolling #runic-ring {
+            animation: rotateRunicRingFast 2.2s linear infinite;
+            filter: drop-shadow(0 0 16px rgba(200, 150, 50, 0.55));
+        }
+        @keyframes rotateRunicRingFast {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #die-svg-wrapper.crit #runic-ring {
+            filter: drop-shadow(0 0 22px rgba(255, 200, 50, 0.85));
+            transform: scale(1.05);
+        }
+        #die-svg-wrapper.fumble #runic-ring {
+            filter: drop-shadow(0 0 22px rgba(220, 30, 30, 0.85));
+            transform: scale(0.95);
+        }
+
         #die-glow {
-            position: absolute; inset: -20px; border-radius: 50%;
+            position: absolute; inset: -15px; border-radius: 50%;
             background: radial-gradient(circle, rgba(200,150,50,0.25) 0%, transparent 70%);
             opacity: 0; transition: opacity 0.4s; pointer-events: none;
+            z-index: 2;
         }
         #die-svg-wrapper.rolling #die-glow { opacity: 1; animation: glowBreathe 0.35s infinite alternate; }
-        #die-svg-wrapper.crit #die-glow { opacity: 1; background: radial-gradient(circle, rgba(255,200,60,0.5) 0%, transparent 70%); }
-        @keyframes glowBreathe { from { transform: scale(0.88); opacity: 0.6; } to { transform: scale(1.12); opacity: 1; } }
+        #die-svg-wrapper.crit #die-glow { opacity: 1; background: radial-gradient(circle, rgba(255,200,60,0.45) 0%, transparent 70%); }
+        #die-svg-wrapper.fumble #die-glow { opacity: 1; background: radial-gradient(circle, rgba(220,30,30,0.45) 0%, transparent 70%); }
+        @keyframes glowBreathe { from { transform: scale(0.88); opacity: 0.5; } to { transform: scale(1.12); opacity: 0.95; } }
 
-        #die-svg { width: 190px; height: 190px; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6)); overflow: visible; }
+        #die-svg { width: 170px; height: 170px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7)); overflow: visible; z-index: 3; }
         #die-svg.rolling { animation: spinRoll 0.28s linear infinite; }
         @keyframes spinRoll {
             0%   { transform: rotate(0deg) scale(1); }
-            33%  { transform: rotate(120deg) scale(1.07); }
-            66%  { transform: rotate(240deg) scale(0.94); }
+            33%  { transform: rotate(120deg) scale(1.06); }
+            66%  { transform: rotate(240deg) scale(0.95); }
             100% { transform: rotate(360deg) scale(1); }
         }
         #die-svg.settle { animation: diceSettle 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
         @keyframes diceSettle { 0% { transform: rotate(-18deg) scale(1.18); } 60% { transform: rotate(5deg) scale(0.96); } 100% { transform: rotate(0deg) scale(1); } }
         #die-svg-wrapper.crit #die-svg { animation: critFlash 0.55s ease forwards; }
-        @keyframes critFlash { 0% { filter: drop-shadow(0 0 0 rgba(255,220,60,0)); } 40% { filter: drop-shadow(0 0 32px rgba(255,220,60,1)); } 100% { filter: drop-shadow(0 0 12px rgba(255,200,50,0.4)); } }
+        #die-svg-wrapper.fumble #die-svg { animation: fumbleFlash 0.55s ease forwards; }
+        @keyframes critFlash { 0% { filter: drop-shadow(0 0 0 rgba(255,220,60,0)); } 40% { filter: drop-shadow(0 0 35px rgba(255,220,60,1)); } 100% { filter: drop-shadow(0 0 15px rgba(255,200,50,0.45)); } }
+        @keyframes fumbleFlash { 0% { filter: drop-shadow(0 0 0 rgba(220,30,30,0)); } 40% { filter: drop-shadow(0 0 35px rgba(220,30,30,1)); } 100% { filter: drop-shadow(0 0 15px rgba(200,20,20,0.45)); } }
 
-        #expression-display { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--parchment-dim); letter-spacing: 3px; }
+        #expression-display { font-family: 'Cinzel', serif; font-size: 1.05rem; color: var(--parchment-dim); letter-spacing: 3px; }
+        
         .crit-label {
-            font-family: 'Cinzel Decorative', serif; font-size: 0.8rem;
-            color: var(--gold-light); letter-spacing: 4px; text-transform: uppercase;
-            text-shadow: 0 0 12px var(--gold); opacity: 0; height: 0; overflow: hidden;
+            font-family: 'Cinzel Decorative', serif; font-size: 0.85rem;
+            letter-spacing: 4px; text-transform: uppercase;
+            opacity: 0; height: 0; overflow: hidden;
             transition: opacity 0.4s, height 0.3s;
+            z-index: 10;
         }
         .crit-label.show { opacity: 1; height: 22px; }
+        .crit-label.success { color: var(--gold-light); text-shadow: 0 0 12px var(--gold); }
+        .crit-label.fumble { color: #ff5f5f; text-shadow: 0 0 12px #dd2222; }
+
+        /* ── QUICK MODIFIERS ── */
+        .quick-modifiers {
+            display: flex; gap: 8px; margin-top: -6px; margin-bottom: 4px; z-index: 10;
+        }
+        .mod-btn {
+            background: rgba(200, 150, 50, 0.08); border: 1px solid rgba(201, 147, 58, 0.22);
+            color: var(--parchment-dim); font-family: 'Cinzel', serif; font-size: 0.72rem;
+            font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .mod-btn:hover {
+            background: rgba(201, 147, 58, 0.18); color: var(--gold-light); border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(201, 147, 58, 0.2);
+        }
+        .mod-btn:active { transform: scale(0.92); }
 
         /* ── RESULT ── */
         #result-container {
             width: 100%;
-            background: linear-gradient(140deg, #181f32 0%, var(--card) 100%);
+            background: var(--card);
             border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,150,50,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(200,150,50,0.08);
             display: flex; flex-direction: column; gap: 12px;
             opacity: 0; transform: translateY(14px) scale(0.98);
             transition: all 0.4s cubic-bezier(0.34,1.2,0.64,1); pointer-events: none;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
         #result-container.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .result-group { padding-bottom: 12px; border-bottom: 1px solid rgba(200,150,50,0.1); }
@@ -141,28 +232,76 @@
         .group-total { font-family: 'Cinzel', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold-light); text-shadow: 0 0 20px rgba(230,180,80,0.35); line-height: 1; }
         .group-details { font-size: 0.85rem; color: var(--muted); font-style: italic; margin-top: 4px; }
         .rolls-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        
         .roll-chip { font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.2); color: var(--parchment-dim); }
         .roll-chip.max { background: rgba(200,150,50,0.22); border-color: var(--gold); color: var(--gold-light); }
-        .roll-chip.min { background: rgba(100,30,30,0.25); border-color: rgba(180,60,60,0.4); color: #c08080; }
+        .roll-chip.min { background: rgba(180,40,40,0.25); border-color: rgba(220,60,60,0.4); color: #ffa0a0; }
+        
+        .roll-chip.discarded {
+            text-decoration: line-through;
+            opacity: 0.4;
+            background: rgba(255,255,255,0.02);
+            border-color: rgba(255,255,255,0.06);
+            color: var(--muted);
+        }
+
+        /* ── ADVANTAGE SELECTOR ── */
+        .advantage-selector {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 3px;
+            width: 85%;
+            max-width: 320px;
+            margin-top: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .adv-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 7px 10px;
+            border-radius: 17px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .adv-btn.active {
+            background: linear-gradient(180deg, #ecc060 0%, #c9933a 100%);
+            color: #180e00;
+            box-shadow: 0 2px 8px rgba(200, 150, 50, 0.35);
+        }
+        .adv-btn:hover:not(.active) {
+            color: var(--gold-light);
+        }
 
         /* ── ROLL BUTTON ── */
         #roll-button {
             font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
             letter-spacing: 3px; text-transform: uppercase; color: #180e00;
-            background: linear-gradient(180deg, #ecc060 0%, #c9933a 55%, #9a6818 100%);
+            background: linear-gradient(180deg, #ecc060 0%, #c9933a 50%, #9a6818 100%);
             border: none; padding: 17px 40px; border-radius: 50px;
             cursor: pointer; width: 85%; max-width: 320px;
-            box-shadow: 0 6px 22px rgba(170,110,20,0.45), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.2);
-            transition: all 0.15s; position: relative; overflow: hidden;
+            box-shadow: 0 6px 20px rgba(170,110,20,0.35), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.3);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+            z-index: 10;
         }
         #roll-button::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%); border-radius: 50px; }
-        #roll-button:active { transform: scale(0.95) translateY(2px); box-shadow: 0 2px 10px rgba(170,110,20,0.4), inset 0 2px 4px rgba(0,0,0,0.2); }
-        #roll-button:disabled { opacity: 0.65; cursor: not-allowed; }
+        #roll-button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(170,110,20,0.5), 0 0 12px rgba(232, 188, 96, 0.3); }
+        #roll-button:active { transform: scale(0.95) translateY(1px); box-shadow: 0 3px 10px rgba(170,110,20,0.3), inset 0 2px 4px rgba(0,0,0,0.2); }
+        #roll-button:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .shake-hint { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 7px; font-style: italic; }
+        .shake-hint { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 7px; font-style: italic; z-index: 10; }
 
         /* ── QUICK ROLLS ── */
-        #quick-rolls { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        #quick-rolls { width: 100%; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
 
         .qr-header {
             display: flex; align-items: center; gap: 10px;
@@ -176,12 +315,18 @@
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s; flex-shrink: 0;
         }
-        .btn-add-folder:hover { background: rgba(200,150,50,0.22); border-color: var(--gold); }
+        .btn-add-folder:hover { background: rgba(200,150,50,0.22); border-color: var(--gold); box-shadow: 0 0 8px rgba(200,150,50,0.35); }
 
         /* Folder card */
         .folder-card {
-            background: linear-gradient(140deg, #181f32 0%, var(--card) 100%);
+            background: var(--card);
             border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .folder-card:hover {
+            border-color: rgba(201, 147, 58, 0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .folder-header {
             display: flex; align-items: center; gap: 8px;
@@ -192,7 +337,7 @@
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
             transition: transform 0.22s; background: none; border: none; cursor: pointer;
         }
-        .folder-card.open .folder-chevron { transform: rotate(90deg); }
+        .folder-card.open .folder-chevron { transform: rotate(90deg); color: var(--gold); }
 
         .folder-name {
             font-family: 'Cinzel', serif; font-size: 0.86rem; color: var(--parchment);
@@ -205,7 +350,7 @@
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
-        .btn-folder-add:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,150,50,0.1); }
+        .btn-folder-add:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,150,50,0.1); box-shadow: 0 0 6px rgba(200,150,50,0.3); }
         .btn-folder-del {
             width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
             background: none; border: none; color: var(--muted); cursor: pointer;
@@ -225,12 +370,56 @@
         .saved-roll-btn {
             font-family: 'Cinzel', serif; font-size: 0.78rem; font-weight: 600;
             padding: 6px 12px; border-radius: 20px;
-            background: rgba(200,150,50,0.1); border: 1px solid rgba(200,150,50,0.22);
-            color: var(--parchment); cursor: pointer; transition: all 0.15s;
+            cursor: pointer; transition: all 0.2s;
             max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid transparent;
         }
-        .saved-roll-btn:hover { background: rgba(200,150,50,0.22); border-color: var(--gold); color: var(--gold-light); }
-        .saved-roll-btn:active { transform: scale(0.93); }
+        .saved-roll-btn:active { transform: scale(0.92); }
+        
+        /* Saved rolls color styles */
+        .saved-roll-btn.color-gold {
+            background: rgba(200, 150, 50, 0.08); border-color: rgba(200, 150, 50, 0.22); color: #e8d5b0;
+        }
+        .saved-roll-btn.color-gold:hover {
+            background: rgba(200, 150, 50, 0.18); border-color: #c9933a; color: #e8bc60; box-shadow: 0 0 10px rgba(200, 150, 50, 0.35);
+        }
+
+        .saved-roll-btn.color-red {
+            background: rgba(226, 62, 62, 0.08); border-color: rgba(226, 62, 62, 0.22); color: #fecaca;
+        }
+        .saved-roll-btn.color-red:hover {
+            background: rgba(226, 62, 62, 0.18); border-color: #e23e3e; color: #fca5a5; box-shadow: 0 0 10px rgba(226, 62, 62, 0.35);
+        }
+
+        .saved-roll-btn.color-blue {
+            background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.22); color: #dbeafe;
+        }
+        .saved-roll-btn.color-blue:hover {
+            background: rgba(59, 130, 246, 0.18); border-color: #3b82f6; color: #93c5fd; box-shadow: 0 0 10px rgba(59, 130, 246, 0.35);
+        }
+
+        .saved-roll-btn.color-green {
+            background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.22); color: #d1fae5;
+        }
+        .saved-roll-btn.color-green:hover {
+            background: rgba(16, 185, 129, 0.18); border-color: #10b981; color: #6ee7b7; box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+        }
+
+        .saved-roll-btn.color-purple {
+            background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.22); color: #f3e8ff;
+        }
+        .saved-roll-btn.color-purple:hover {
+            background: rgba(168, 85, 247, 0.18); border-color: #a855f7; color: #d8b4fe; box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+        }
+
+        .saved-roll-btn.color-gray {
+            background: rgba(107, 114, 128, 0.08); border-color: rgba(107, 114, 128, 0.22); color: #f3f4f6;
+        }
+        .saved-roll-btn.color-gray:hover {
+            background: rgba(107, 114, 128, 0.18); border-color: #6b7280; color: #d1d5db; box-shadow: 0 0 10px rgba(107, 114, 128, 0.35);
+        }
+
         .saved-roll-del {
             position: absolute; right: -7px; top: -7px;
             width: 17px; height: 17px; border-radius: 50%;
@@ -244,20 +433,20 @@
 
         /* ── MODALS (shared) ── */
         .modal {
-            position: fixed; inset: 0; background: rgba(5,7,16,0.82); backdrop-filter: blur(5px);
+            position: fixed; inset: 0; background: rgba(5,7,16,0.85); backdrop-filter: blur(5px);
             display: flex; align-items: flex-end; justify-content: center;
             z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .modal.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: linear-gradient(180deg, #1c2134 0%, #131724 100%);
-            border: 1px solid rgba(200,150,50,0.22); border-bottom: none;
+            background: linear-gradient(180deg, #181d2f 0%, #0d101a 100%);
+            border: 1px solid rgba(200,150,50,0.28); border-bottom: none;
             border-radius: 22px 22px 0 0; width: 100%; max-width: 600px;
             padding: 20px 22px 40px; max-height: 88vh; overflow-y: auto;
             display: flex; flex-direction: column; gap: 18px;
             transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.34,1.1,0.64,1);
-            box-shadow: 0 -8px 40px rgba(0,0,0,0.55);
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.65);
         }
         .modal.active .modal-content { transform: translateY(0); }
         .modal-handle { width: 36px; height: 4px; background: rgba(200,150,50,0.28); border-radius: 2px; margin: 0 auto -4px; }
@@ -267,12 +456,12 @@
         label { font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
 
         input[type="text"] {
-            background: rgba(0,0,0,0.35); border: 1px solid rgba(200,150,50,0.28);
+            background: rgba(0,0,0,0.45); border: 1px solid rgba(200,150,50,0.28);
             color: var(--parchment); padding: 13px 16px; font-size: 1.1rem;
             font-family: 'EB Garamond', serif; border-radius: 10px; width: 100%;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        input[type="text"]:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 14px rgba(200,150,50,0.18); }
+        input[type="text"]:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 14px rgba(200,150,50,0.25); }
 
         .dice-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
         .dice-btn {
@@ -281,22 +470,37 @@
             cursor: pointer; font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 600;
             transition: all 0.15s;
         }
-        .dice-btn:hover { background: rgba(200,150,50,0.17); border-color: var(--gold); color: var(--gold); }
+        .dice-btn:hover { background: rgba(200,150,50,0.17); border-color: var(--gold); color: var(--gold); box-shadow: 0 0 6px rgba(200,150,50,0.2); }
         .dice-btn:active { transform: scale(0.93); }
         .dice-btn.special { background: rgba(120,30,30,0.12); border-color: rgba(150,50,50,0.28); color: var(--parchment-dim); }
         .dice-btn.special:hover { background: rgba(150,40,40,0.28); border-color: #8b3333; color: #d08080; }
 
+        /* Color picker in roll modal */
+        .color-picker-grid { display: flex; gap: 10px; margin-top: 2px; }
+        .color-picker-btn {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.15);
+            background-color: var(--btn-color);
+            cursor: pointer; transition: all 0.15s;
+            position: relative;
+        }
+        .color-picker-btn:hover { transform: scale(1.1); border-color: rgba(255,255,255,0.4); box-shadow: 0 0 10px var(--btn-glow); }
+        .color-picker-btn.active { border-color: #ffffff; box-shadow: 0 0 12px var(--btn-glow); transform: scale(1.15); }
+
         .modal-footer { display: flex; gap: 10px; }
         .btn { flex: 1; padding: 13px; border-radius: 10px; border: none; font-family: 'Cinzel', serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; }
         .btn-save { background: linear-gradient(180deg, #c9933a, #8a5c15); color: #180e00; box-shadow: 0 4px 12px rgba(170,110,20,0.3); }
+        .btn-save:hover { box-shadow: 0 4px 18px rgba(170,110,20,0.5); }
         .btn-cancel { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid rgba(255,255,255,0.09); }
-
-
+        .btn-cancel:hover { background: rgba(255,255,255,0.1); color: var(--text); }
 
         /* ── LOG ── */
         #log-container { width: 100%; max-width: 480px; padding: 0 20px 32px; position: relative; z-index: 10; display: none; }
         #log-container.active { display: block; }
-        .log-card { background: linear-gradient(140deg, #181f32 0%, var(--card) 100%); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+        .log-card {
+            background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
         .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .log-header h3 { font-family: 'Cinzel', serif; font-size: 0.78rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2.5px; }
         .log-list { display: flex; flex-direction: column; gap: 7px; max-height: 260px; overflow-y: auto; }
@@ -320,8 +524,9 @@
 
         @media (max-width: 400px) {
             .dice-grid { grid-template-columns: repeat(4, 1fr); }
-            #die-svg { width: 155px; height: 155px; }
-            #die-svg-wrapper { width: 155px; height: 155px; }
+            #die-svg { width: 145px; height: 145px; }
+            #die-svg-wrapper { width: 190px; height: 190px; }
+            #runic-ring-container { width: 190px; height: 190px; }
         }
     </style>
 </head>
@@ -354,28 +559,52 @@
     <div id="dice-arena">
         <div id="die-svg-wrapper">
             <div id="die-glow"></div>
+            <!-- Runic Ring Frame -->
+            <div id="runic-ring-container">
+                <svg id="runic-ring" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="130" cy="130" r="120" fill="none" stroke="rgba(201, 147, 58, 0.2)" stroke-width="1.2" />
+                    <circle cx="130" cy="130" r="113" fill="none" stroke="rgba(201, 147, 58, 0.35)" stroke-width="1.8" stroke-dasharray="10 7" />
+                    <circle cx="130" cy="130" r="102" fill="none" stroke="rgba(201, 147, 58, 0.15)" stroke-width="1" />
+                    <g fill="rgba(201, 147, 58, 0.65)">
+                        <!-- Diamonds / Runes representation -->
+                        <path d="M 130 6 L 133 9 L 130 12 L 127 9 Z" />
+                        <path d="M 130 248 L 133 251 L 130 254 L 127 251 Z" />
+                        <path d="M 6 130 L 9 133 L 12 130 L 9 127 Z" />
+                        <path d="M 248 130 L 251 133 L 254 130 L 251 127 Z" />
+                        
+                        <!-- Diagonal markers -->
+                        <path d="M 44 44 L 48 48" stroke="rgba(201, 147, 58, 0.6)" stroke-width="1.5"/>
+                        <path d="M 216 44 L 212 48" stroke="rgba(201, 147, 58, 0.6)" stroke-width="1.5"/>
+                        <path d="M 44 216 L 48 212" stroke="rgba(201, 147, 58, 0.6)" stroke-width="1.5"/>
+                        <path d="M 216 216 L 212 212" stroke="rgba(201, 147, 58, 0.6)" stroke-width="1.5"/>
+                    </g>
+                </svg>
+            </div>
+            <!-- Main Die shape -->
             <svg id="die-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" overflow="visible">
                 <defs>
                     <linearGradient id="dieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#252c45"/>
-                        <stop offset="100%" style="stop-color:#101520"/>
+                        <stop offset="0%" style="stop-color:#3a2c16"/>
+                        <stop offset="60%" style="stop-color:#1c1307"/>
+                        <stop offset="100%" style="stop-color:#0d0802"/>
                     </linearGradient>
                     <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#e0b850"/>
-                        <stop offset="100%" style="stop-color:#6a4a10"/>
+                        <stop offset="0%" style="stop-color:#ffe494"/>
+                        <stop offset="50%" style="stop-color:#c9933a"/>
+                        <stop offset="100%" style="stop-color:#70501a"/>
                     </linearGradient>
-                    <!-- Facet Gradients for 3D depth -->
+                    <!-- Facet Gradients for 3D depth with rich black-gold style -->
                     <linearGradient id="facGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#353d5e"/>
-                        <stop offset="100%" style="stop-color:#1c2235"/>
+                        <stop offset="0%" style="stop-color:#4a371c"/>
+                        <stop offset="100%" style="stop-color:#1e1408"/>
                     </linearGradient>
                     <linearGradient id="facGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#232b45"/>
-                        <stop offset="100%" style="stop-color:#101522"/>
+                        <stop offset="0%" style="stop-color:#322411"/>
+                        <stop offset="100%" style="stop-color:#140e05"/>
                     </linearGradient>
                     <linearGradient id="facGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#151c2f"/>
-                        <stop offset="100%" style="stop-color:#080a13"/>
+                        <stop offset="0%" style="stop-color:#201509"/>
+                        <stop offset="100%" style="stop-color:#0a0602"/>
                     </linearGradient>
                     <filter id="numGlow" x="-30%" y="-30%" width="160%" height="160%">
                         <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="blur"/>
@@ -481,9 +710,25 @@
         <div class="crit-label" id="crit-label">⚔ CRÍTICO! ⚔</div>
         <div id="roll-label" style="display:none; font-family:'Cinzel', serif; font-size:0.9rem; color:var(--gold); margin-bottom:2px; text-transform:uppercase; letter-spacing:2.5px; text-shadow:0 0 10px var(--glow);"></div>
         <div id="expression-display">1d20+5</div>
+        
+        <!-- Quick Modifiers -->
+        <div class="quick-modifiers">
+            <button class="mod-btn" data-mod="+1" title="Adicionar +1">+1</button>
+            <button class="mod-btn" data-mod="-1" title="Subtrair -1">-1</button>
+            <button class="mod-btn" data-mod="+1d6" title="Adicionar +1d6">+d6</button>
+            <button class="mod-btn" data-mod="+1d8" title="Adicionar +1d8">+d8</button>
+        </div>
     </div>
 
+    <!-- Result container -->
     <div id="result-container"></div>
+
+    <!-- Advantage / Disadvantage Selector -->
+    <div class="advantage-selector">
+        <button class="adv-btn active" id="adv-normal" data-mode="normal">Normal</button>
+        <button class="adv-btn" id="adv-advantage" data-mode="adv">Vantagem</button>
+        <button class="adv-btn" id="adv-disadvantage" data-mode="dis">Desvantagem</button>
+    </div>
 
     <button id="roll-button">⚔ &nbsp;ROLAR DADOS</button>
 
@@ -611,6 +856,19 @@
             <button class="dice-btn special new-roll-calc-btn" data-val="clear">C</button>
         </div>
 
+        <!-- Color theme selector -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <label>Cor do Atalho</label>
+            <div class="color-picker-grid">
+                <button class="color-picker-btn active" data-color="gold" style="--btn-color: #c9933a; --btn-glow: rgba(201, 147, 58, 0.45);"></button>
+                <button class="color-picker-btn" data-color="red" style="--btn-color: #e23e3e; --btn-glow: rgba(226, 62, 62, 0.45);"></button>
+                <button class="color-picker-btn" data-color="blue" style="--btn-color: #3b82f6; --btn-glow: rgba(59, 130, 246, 0.45);"></button>
+                <button class="color-picker-btn" data-color="green" style="--btn-color: #10b981; --btn-glow: rgba(16, 185, 129, 0.45);"></button>
+                <button class="color-picker-btn" data-color="purple" style="--btn-color: #a855f7; --btn-glow: rgba(168, 85, 247, 0.45);"></button>
+                <button class="color-picker-btn" data-color="gray" style="--btn-color: #6b7280; --btn-glow: rgba(107, 114, 128, 0.45);"></button>
+            </div>
+        </div>
+
         <p style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-top:-8px;">
             Use | para separar grupos. Ex: <span style="color:var(--gold-dim)">1d20+5 | 2d6+3</span>
         </p>
@@ -633,6 +891,7 @@
 const state = {
     expression: '1d20+5',
     rollLabel: '',
+    rollMode: 'normal', // 'normal', 'adv', 'dis'
     history: JSON.parse(localStorage.getItem('dice_history') || '[]'),
     folders: JSON.parse(localStorage.getItem('dice_folders') || '[]'),
     activeFolderId: null,
@@ -642,6 +901,7 @@ const state = {
 };
 
 let newRollExpr = '';
+let selectedRollColor = 'gold';
 
 // ── Elements ───────────────────────────────────────────────
 const el = {
@@ -708,83 +968,203 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function saveFolders() { localStorage.setItem('dice_folders', JSON.stringify(state.folders)); }
 
-// ── Stars ──────────────────────────────────────────────────
+// ── Stars Canvas (Drifting ember sparks background) ─────────────────
 function initStars() {
     const canvas = document.getElementById('stars-canvas');
     const ctx = canvas.getContext('2d');
-    function draw() {
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        for(let i=0;i<90;i++) {
-            ctx.beginPath();
-            ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.1, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(210,180,110,${Math.random()*0.45+0.05})`;
-            ctx.fill();
+    let animationFrameId;
+    let stars = [];
+    
+    function createStars() {
+        stars = [];
+        const count = 75;
+        for (let i = 0; i < count; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.4 + 0.3,
+                alpha: Math.random() * 0.75 + 0.1,
+                speed: Math.random() * 0.04 + 0.012,
+                vx: (Math.random() - 0.5) * 0.16,
+                vy: -Math.random() * 0.22 - 0.06
+            });
         }
     }
-    draw(); window.addEventListener('resize', draw);
+    
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        createStars();
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        stars.forEach(s => {
+            s.y += s.vy;
+            s.x += s.vx;
+            
+            // Re-spawn if off screen
+            if (s.y < 0) {
+                s.y = canvas.height;
+                s.x = Math.random() * canvas.width;
+            }
+            if (s.x < 0 || s.x > canvas.width) {
+                s.x = Math.random() * canvas.width;
+            }
+            
+            // Twinkle
+            s.alpha += s.speed;
+            if (s.alpha > 0.85 || s.alpha < 0.08) {
+                s.speed = -s.speed;
+            }
+            
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(212, 175, 55, ${s.alpha})`;
+            ctx.fill();
+        });
+        
+        animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
 }
 
 // ── Particles ──────────────────────────────────────────────
 function spawnParticles(cx, cy, isCrit) {
     const colors = ['#e8bc60','#c9933a','#fffbe0','#d4a843','#ffffff'];
-    const count = isCrit ? 28 : 14;
+    const count = isCrit ? 36 : 16;
     for(let i=0;i<count;i++) {
         const p = document.createElement('div');
         p.className = 'particle';
-        const sz  = isCrit ? 3+Math.random()*7 : 2+Math.random()*5;
+        const sz  = isCrit ? 3+Math.random()*8 : 2+Math.random()*5;
         const ang = Math.random()*Math.PI*2;
-        const spd = isCrit ? 80+Math.random()*160 : 50+Math.random()*100;
+        const spd = isCrit ? 90+Math.random()*180 : 50+Math.random()*100;
         const dur = 0.5+Math.random()*0.5;
         p.style.cssText = `left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;
             background:${colors[Math.floor(Math.random()*colors.length)]};
             border-radius:${Math.random()>0.4?'50%':'2px'};transform:translate(-50%,-50%);
-            transition:transform ${dur}s ease-out,opacity ${dur}s ease-out;`;
+            transition:transform ${dur}s ease-out,opacity ${dur}s ease-out; z-index:999;`;
         el.particles.appendChild(p);
         requestAnimationFrame(() => {
-            p.style.transform=`translate(calc(-50% + ${Math.cos(ang)*spd}px),calc(-50% + ${Math.sin(ang)*spd-(isCrit?100:60)}px))`;
+            p.style.transform=`translate(calc(-50% + ${Math.cos(ang)*spd}px),calc(-50% + ${Math.sin(ang)*spd-(isCrit?110:60)}px))`;
             p.style.opacity='0';
         });
         setTimeout(()=>p.remove(),(dur+0.1)*1000);
     }
 }
 
-// ── Audio ──────────────────────────────────────────────────
+// ── Audio (Web Audio Synth) ─────────────────────────────────
 function initAudio() {
     if(state.audioEnabled) return;
     state.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
     state.audioEnabled = true;
     el.permOverlay.style.display='none';
 }
+
 function playTick() {
     if(!state.audioCtx) return;
-    const ctx=state.audioCtx, osc=ctx.createOscillator(), gain=ctx.createGain();
-    osc.type='triangle'; osc.frequency.setValueAtTime(120+Math.random()*120,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(35,ctx.currentTime+0.09);
-    gain.gain.setValueAtTime(0.18,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.09);
-    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.1);
+    const ctx=state.audioCtx;
+    const now = ctx.currentTime;
+    
+    // 1. High frequency click (transient impact)
+    const clickOsc = ctx.createOscillator();
+    const clickGain = ctx.createGain();
+    clickOsc.type = 'triangle';
+    clickOsc.frequency.setValueAtTime(700 + Math.random()*500, now);
+    clickGain.gain.setValueAtTime(0.08, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+    clickOsc.connect(clickGain);
+    clickGain.connect(ctx.destination);
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.015);
+    
+    // 2. Low-mid resonant body thud
+    const resonantOsc = ctx.createOscillator();
+    const resonantGain = ctx.createGain();
+    resonantOsc.type = 'sine';
+    resonantOsc.frequency.setValueAtTime(140 + Math.random()*100, now);
+    resonantOsc.frequency.exponentialRampToValueAtTime(55, now + 0.07);
+    resonantGain.gain.setValueAtTime(0.16, now);
+    resonantGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    resonantOsc.connect(resonantGain);
+    resonantGain.connect(ctx.destination);
+    resonantOsc.start(now);
+    resonantOsc.stop(now + 0.09);
 }
+
 function playShakeSound() {
     if(!state.audioCtx) return;
-    const ctx=state.audioCtx, sz=ctx.sampleRate*0.1, buf=ctx.createBuffer(1,sz,ctx.sampleRate);
+    const ctx=state.audioCtx, sz=ctx.sampleRate*0.12, buf=ctx.createBuffer(1,sz,ctx.sampleRate);
     const data=buf.getChannelData(0); for(let i=0;i<sz;i++) data[i]=Math.random()*2-1;
     const noise=ctx.createBufferSource(); noise.buffer=buf;
-    const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=2000;
-    const gain=ctx.createGain(); gain.gain.setValueAtTime(0.1,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1);
+    const flt=ctx.createBiquadFilter(); flt.type='bandpass'; flt.frequency.value=1800;
+    const gain=ctx.createGain(); gain.gain.setValueAtTime(0.12,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
     noise.connect(flt); flt.connect(gain); gain.connect(ctx.destination); noise.start();
 }
+
 function playCrit() {
     if(!state.audioCtx) return;
     const ctx=state.audioCtx;
-    [330,440,554,660,880].forEach((f,i)=>{
-        const osc=ctx.createOscillator(), g=ctx.createGain(); osc.type='sine'; osc.frequency.value=f;
-        const t=ctx.currentTime+i*0.07;
-        g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.14,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.28);
-        osc.connect(g); g.connect(ctx.destination); osc.start(t); osc.stop(t+0.3);
+    // Harmonious major arpeggio chords
+    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // C Major arpeggio
+    notes.forEach((f,i)=>{
+        const osc=ctx.createOscillator(), g=ctx.createGain();
+        osc.type='sine';
+        const t=ctx.currentTime+i*0.06;
+        osc.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0,t);
+        g.gain.linearRampToValueAtTime(0.14,t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,t+0.35);
+        osc.connect(g); g.connect(ctx.destination); osc.start(t); osc.stop(t+0.4);
     });
 }
 
-// ── Parser ─────────────────────────────────────────────────
+function playFumble() {
+    if(!state.audioCtx) return;
+    const ctx=state.audioCtx;
+    // Ominous deep drone
+    const freqs = [78, 82, 120];
+    freqs.forEach((f, i)=>{
+        const osc=ctx.createOscillator(), g=ctx.createGain();
+        osc.type='sawtooth';
+        osc.frequency.setValueAtTime(f, ctx.currentTime);
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(220, ctx.currentTime);
+        filter.frequency.linearRampToValueAtTime(70, ctx.currentTime + 0.65);
+        
+        g.gain.setValueAtTime(0.18 - (i*0.03), ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+        
+        osc.connect(filter);
+        filter.connect(g);
+        g.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.85);
+    });
+}
+
+// ── Screen Flash / Shake Effect ─────────────────────────────
+function triggerScreenFlash(type) {
+    const overlay = document.getElementById('screen-effect-overlay') || document.createElement('div');
+    overlay.id = 'screen-effect-overlay';
+    document.body.appendChild(overlay);
+    overlay.className = '';
+    void overlay.offsetWidth; // force reflow
+    overlay.classList.add(type === 'success' ? 'flash-success' : 'flash-fumble');
+    
+    document.body.classList.remove('shake-screen');
+    void document.body.offsetWidth;
+    document.body.classList.add('shake-screen');
+    setTimeout(() => document.body.classList.remove('shake-screen'), 450);
+}
+
+// ── Parser (With Advantage / Disadvantage Support) ────────────
 function parseExpression(expr) {
     return expr.split('|').map(g=>g.trim()).filter(Boolean).map(groupStr => {
         const result={original:groupStr,total:0,details:[]};
@@ -797,7 +1177,32 @@ function parseExpression(expr) {
                 else if(cnt.startsWith('-')){sign=-1;cnt=cnt.slice(1);}
                 cnt=parseInt(cnt)||1; sides=parseInt(sides);
                 const rolls=[];
-                for(let i=0;i<cnt;i++){const r=Math.floor(Math.random()*sides)+1;rolls.push(r);result.total+=r*sign;}
+                
+                // If it is a d20 roll and advantage/disadvantage mode is active
+                if(sides === 20 && (state.rollMode === 'adv' || state.rollMode === 'dis')) {
+                    for(let i=0;i<cnt;i++){
+                        const r1 = Math.floor(Math.random()*20)+1;
+                        const r2 = Math.floor(Math.random()*20)+1;
+                        let rSelected, rDiscarded;
+                        
+                        if(state.rollMode === 'adv') {
+                            rSelected = Math.max(r1, r2);
+                            rDiscarded = Math.min(r1, r2);
+                        } else {
+                            rSelected = Math.min(r1, r2);
+                            rDiscarded = Math.max(r1, r2);
+                        }
+                        
+                        rolls.push({val: rSelected, discarded: rDiscarded});
+                        result.total += rSelected * sign;
+                    }
+                } else {
+                    for(let i=0;i<cnt;i++){
+                        const r=Math.floor(Math.random()*sides)+1;
+                        rolls.push({val: r});
+                        result.total+=r*sign;
+                    }
+                }
                 result.details.push({type:'dice',expr:part,rolls,sides,sign});
             } else {
                 const val=parseInt(part); if(!isNaN(val)){result.total+=val;result.details.push({type:'mod',val});}
@@ -820,7 +1225,18 @@ function renderResults(results) {
         res.details.forEach(d=>{
             if(d.type==='dice'){
                 chipsHTML+='<div class="rolls-chips">';
-                d.rolls.forEach(r=>{const cls=r===d.sides?'max':r===1?'min':''; chipsHTML+=`<span class="roll-chip ${cls}">${r}</span>`;});
+                d.rolls.forEach(r=>{
+                    const val = typeof r === 'object' ? r.val : r;
+                    const discarded = typeof r === 'object' ? r.discarded : null;
+                    
+                    const cls=val===d.sides?'max':val===1?'min':'';
+                    chipsHTML+=`<span class="roll-chip ${cls}">${val}</span>`;
+                    
+                    if (discarded !== null) {
+                        const discCls=discarded===d.sides?'max':discarded===1?'min':'';
+                        chipsHTML+=`<span class="roll-chip discarded ${discCls}">${discarded}</span>`;
+                    }
+                });
                 chipsHTML+=`<span style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--muted);align-self:center;margin-left:2px;">${esc(d.expr)}</span></div>`;
             }
         });
@@ -863,6 +1279,7 @@ function updateDisplay(expr){
     }
     el.critLabel.classList.remove('show');
     el.dieWrapper.classList.remove('crit');
+    el.dieWrapper.classList.remove('fumble');
     const dieType=getPrimaryDie(expr);
     const cfg=activateDieShape(dieType);
     el.dieNumber.setAttribute('y',cfg.numY);
@@ -872,13 +1289,42 @@ function updateDisplay(expr){
     el.dieLabel.textContent=dieType.toUpperCase();
 }
 
+// ── Adjust Expression (Quick modifiers) ───────────────────
+function adjustExpression(mod) {
+    let expr = state.expression.trim();
+    if (mod === '+1' || mod === '-1') {
+        const val = mod === '+1' ? 1 : -1;
+        const groups = expr.split('|').map(g => g.trim());
+        let lastGroup = groups[groups.length - 1];
+        
+        const match = lastGroup.match(/([+-]\s*\d+)$/);
+        if (match) {
+            const currentMod = parseInt(match[1].replace(/\s+/g, ''));
+            const newVal = currentMod + val;
+            const sign = newVal >= 0 ? '+' : '';
+            lastGroup = lastGroup.substring(0, match.index) + (newVal !== 0 ? (sign + newVal) : '');
+        } else {
+            const sign = val >= 0 ? '+' : '';
+            lastGroup = lastGroup + sign + val;
+        }
+        groups[groups.length - 1] = lastGroup;
+        expr = groups.join(' | ');
+    } else {
+        expr = expr + ' ' + mod;
+    }
+    state.expression = expr;
+    updateDisplay(expr);
+}
+
 // ── Roll ───────────────────────────────────────────────────
 async function roll(){
     if(state.isRolling) return;
     state.isRolling=true; initAudio();
     el.resultContainer.classList.remove('visible');
     el.rollButton.disabled=true;
-    el.critLabel.classList.remove('show'); el.dieWrapper.classList.remove('crit');
+    el.critLabel.classList.remove('show');
+    el.dieWrapper.classList.remove('crit');
+    el.dieWrapper.classList.remove('fumble');
     const dieType=getPrimaryDie(state.expression);
     const cfg=activateDieShape(dieType);
     const sides=parseInt(dieType.replace('d',''))||20;
@@ -896,14 +1342,36 @@ async function roll(){
         el.dieSvg.classList.add('settle'); setTimeout(()=>el.dieSvg.classList.remove('settle'),500);
         const displayVal=results.length===1?results[0].total:'✦';
         el.dieNumber.setAttribute('font-size',results.length===1?cfg.fs:40); el.dieNumber.textContent=displayVal;
+        
         let isCrit=false;
+        let isFumble=false;
         if(dieType==='d20'&&results.length===1){
             const d=results[0].details[0];
-            if(d&&d.type==='dice'&&d.rolls.length===1&&d.rolls[0]===20){
-                isCrit=true;
-                setTimeout(()=>{ el.dieWrapper.classList.add('crit'); el.critLabel.classList.add('show'); playCrit(); },80);
+            if(d&&d.type==='dice'&&d.rolls.length===1){
+                const mainRoll = d.rolls[0];
+                const rolledVal = typeof mainRoll === 'object' ? mainRoll.val : mainRoll;
+                if(rolledVal===20){
+                    isCrit=true;
+                    setTimeout(()=>{
+                        el.dieWrapper.classList.add('crit');
+                        el.critLabel.textContent = "⚔ CRÍTICO! ⚔";
+                        el.critLabel.className = "crit-label show success";
+                        playCrit();
+                        triggerScreenFlash('success');
+                    },80);
+                } else if(rolledVal===1){
+                    isFumble=true;
+                    setTimeout(()=>{
+                        el.dieWrapper.classList.add('fumble');
+                        el.critLabel.textContent = "☠ FALHA CRÍTICA! ☠";
+                        el.critLabel.className = "crit-label show fumble";
+                        playFumble();
+                        triggerScreenFlash('fumble');
+                    },80);
+                }
             }
         }
+        
         const r=el.rollButton.getBoundingClientRect();
         spawnParticles(r.left+r.width/2, r.top+r.height/2, isCrit);
         renderResults(results); addToLog(state.expression,results);
@@ -955,7 +1423,7 @@ function renderFolders(){
                         ? '<span class="folder-empty">Vazio — clique + para adicionar rolagens.</span>'
                         : folder.rolls.map(roll=>`
                             <div class="saved-roll-wrap">
-                                <button class="saved-roll-btn"
+                                <button class="saved-roll-btn color-${esc(roll.color || 'gold')}"
                                     data-action="exec-roll"
                                     data-folder-id="${esc(folder.id)}"
                                     data-roll-id="${esc(roll.id)}"
@@ -1035,8 +1503,16 @@ el.folderNameInput.addEventListener('keydown',e=>{
 // New Roll modal
 function openNewRollModal(){
     newRollExpr='';
+    selectedRollColor='gold';
     el.rollNameInput.value='';
     el.newRollExprDisp.value='';
+    
+    // Reset color picker active class
+    document.querySelectorAll('.color-picker-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.getAttribute('data-color') === 'gold') btn.classList.add('active');
+    });
+    
     el.newRollModal.classList.add('active');
     setTimeout(()=>el.rollNameInput.focus(),350);
 }
@@ -1047,10 +1523,18 @@ document.getElementById('btn-close-new-roll').addEventListener('click',()=>el.ne
 document.getElementById('btn-cancel-new-roll').addEventListener('click',()=>el.newRollModal.classList.remove('active'));
 el.newRollModal.addEventListener('click',e=>{if(e.target===el.newRollModal)el.newRollModal.classList.remove('active');});
 
+// Color picker interaction
+document.querySelectorAll('.color-picker-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-picker-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedRollColor = btn.getAttribute('data-color');
+    });
+});
+
 // Calculator buttons inside new-roll modal
 document.querySelectorAll('.new-roll-calc-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
-        // Sync state from what the user may have typed manually
         newRollExpr = el.newRollExprDisp.value;
         const val=btn.getAttribute('data-val');
         if(val==='back'){ newRollExpr=newRollExpr.slice(0,-1); }
@@ -1067,7 +1551,6 @@ document.querySelectorAll('.new-roll-calc-btn').forEach(btn=>{
     });
 });
 
-// Keep newRollExpr in sync when user types directly
 el.newRollExprDisp.addEventListener('input', () => { newRollExpr = el.newRollExprDisp.value; });
 
 document.getElementById('btn-save-new-roll').addEventListener('click',()=>{
@@ -1077,7 +1560,7 @@ document.getElementById('btn-save-new-roll').addEventListener('click',()=>{
     if(!expr){ el.newRollExprDisp.style.borderColor='rgba(200,50,50,0.6)'; setTimeout(()=>el.newRollExprDisp.style.borderColor='',1200); el.newRollExprDisp.focus(); return; }
     const f=state.folders.find(f=>f.id===state.activeFolderId);
     if(!f) return;
-    f.rolls.push({id:genId(), name, expr});
+    f.rolls.push({id:genId(), name, expr, color: selectedRollColor});
     saveFolders(); renderFolders();
     el.newRollModal.classList.remove('active');
 });
@@ -1125,6 +1608,24 @@ document.getElementById('btn-log').addEventListener('click',()=>{
 });
 document.getElementById('btn-clear-log').addEventListener('click',()=>{
     state.history=[]; localStorage.removeItem('dice_history'); renderLog();
+});
+
+// Advantage Buttons Handlers
+document.querySelectorAll('.advantage-selector .adv-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.advantage-selector .adv-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.rollMode = btn.getAttribute('data-mode');
+        initAudio();
+    });
+});
+
+// Quick Modifiers Handlers
+document.querySelectorAll('.quick-modifiers .mod-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mod = btn.getAttribute('data-mod');
+        adjustExpression(mod);
+    });
 });
 
 el.permOverlay.addEventListener('click', requestShakePermission);
